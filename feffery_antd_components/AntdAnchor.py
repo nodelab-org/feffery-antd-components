@@ -15,6 +15,8 @@ Keyword arguments:
 
 - className (string; optional)
 
+- containerId (string; optional)
+
 - linkDict (optional)
 
 - loading_state (dict; optional)
@@ -32,12 +34,12 @@ Keyword arguments:
 
 - style (dict; optional)"""
     @_explicitize_args
-    def __init__(self, id=Component.UNDEFINED, className=Component.UNDEFINED, style=Component.UNDEFINED, linkDict=Component.UNDEFINED, align=Component.UNDEFINED, loading_state=Component.UNDEFINED, **kwargs):
-        self._prop_names = ['id', 'align', 'className', 'linkDict', 'loading_state', 'style']
+    def __init__(self, id=Component.UNDEFINED, className=Component.UNDEFINED, style=Component.UNDEFINED, linkDict=Component.UNDEFINED, align=Component.UNDEFINED, containerId=Component.UNDEFINED, loading_state=Component.UNDEFINED, **kwargs):
+        self._prop_names = ['id', 'align', 'className', 'containerId', 'linkDict', 'loading_state', 'style']
         self._type = 'AntdAnchor'
         self._namespace = 'feffery_antd_components'
         self._valid_wildcard_attributes =            []
-        self.available_properties = ['id', 'align', 'className', 'linkDict', 'loading_state', 'style']
+        self.available_properties = ['id', 'align', 'className', 'containerId', 'linkDict', 'loading_state', 'style']
         self.available_wildcard_properties =            []
         _explicit_args = kwargs.pop('_explicit_args')
         _locals = locals()

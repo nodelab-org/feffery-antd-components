@@ -11,6 +11,7 @@ Keyword arguments:
 - `id` (String; optional)
 - `align` (String; optional)
 - `className` (String; optional)
+- `containerId` (String; optional)
 - `linkDict` (optional)
 - `loading_state` (optional): . loading_state has the following type: lists containing elements 'is_loading', 'prop_name', 'component_name'.
 Those elements have the following types:
@@ -20,7 +21,7 @@ Those elements have the following types:
 - `style` (Dict; optional)
 """
 function 'feffery'_antdanchor(; kwargs...)
-        available_props = Symbol[:id, :align, :className, :linkDict, :loading_state, :style]
+        available_props = Symbol[:id, :align, :className, :containerId, :linkDict, :loading_state, :style]
         wild_props = Symbol[]
         return Component("'feffery'_antdanchor", "AntdAnchor", "feffery_antd_components", available_props, wild_props; kwargs...)
 end
