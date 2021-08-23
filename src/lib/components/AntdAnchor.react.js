@@ -64,7 +64,8 @@ export default class AntdAnchor extends Component {
                             props: {
                                 id: id,
                                 className: className,
-                                style: style
+                                style: style,
+                                getContainer: (triggerNode) => triggerNode.parentNode
                             },
                             children: linkDict
                         }
