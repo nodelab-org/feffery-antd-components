@@ -64,7 +64,8 @@ export default class AntdPopover extends Component {
                 overlayClassName={overlayClassName}
                 overlayStyle={overlayStyle}
                 overlayInnerStyle={overlayInnerStyle}
-                trigger={trigger} >{realChildren}</Popover>
+                trigger={trigger}
+                getPopupContainer={(triggerNode) => triggerNode.parentNode}>{realChildren}</Popover>
         );
     }
 }

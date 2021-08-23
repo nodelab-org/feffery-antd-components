@@ -45,7 +45,8 @@ export default class AntdTooltip extends Component {
                 overlayClassName={overlayClassName}
                 overlayStyle={overlayStyle}
                 overlayInnerStyle={overlayInnerStyle}
-                trigger={trigger}>
+                trigger={trigger}
+                getPopupContainer={(triggerNode) => triggerNode.parentNode}>
                 {children}
             </Tooltip>
         );
