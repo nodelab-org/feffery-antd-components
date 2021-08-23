@@ -25,12 +25,13 @@ Those elements have the following types:
   - `component_name` (String; optional): Holds the name of the component that is loading
 - `nClicks` (Real; optional)
 - `shape` (String; optional)
+- `size` (String; optional)
 - `style` (Dict; optional)
 - `target` (String; optional)
 - `type` (String; optional)
 """
 function 'feffery'_antdbutton(; kwargs...)
-        available_props = Symbol[:children, :id, :block, :className, :danger, :disabled, :href, :loading_state, :nClicks, :shape, :style, :target, :type]
+        available_props = Symbol[:children, :id, :block, :className, :danger, :disabled, :href, :loading_state, :nClicks, :shape, :size, :style, :target, :type]
         wild_props = Symbol[]
         return Component("'feffery'_antdbutton", "AntdButton", "feffery_antd_components", available_props, wild_props; kwargs...)
 end

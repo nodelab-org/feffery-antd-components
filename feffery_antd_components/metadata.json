@@ -309,6 +309,13 @@
         "required": false,
         "description": ""
       },
+      "size": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": ""
+      },
       "nClicks": {
         "type": {
           "name": "number"

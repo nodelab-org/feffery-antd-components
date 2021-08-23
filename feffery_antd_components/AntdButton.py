@@ -40,18 +40,20 @@ Keyword arguments:
 
 - shape (string; optional)
 
+- size (string; optional)
+
 - style (dict; optional)
 
 - target (string; optional)
 
 - type (string; default 'default')"""
     @_explicitize_args
-    def __init__(self, children=None, id=Component.UNDEFINED, className=Component.UNDEFINED, style=Component.UNDEFINED, type=Component.UNDEFINED, href=Component.UNDEFINED, target=Component.UNDEFINED, block=Component.UNDEFINED, danger=Component.UNDEFINED, disabled=Component.UNDEFINED, shape=Component.UNDEFINED, nClicks=Component.UNDEFINED, loading_state=Component.UNDEFINED, **kwargs):
-        self._prop_names = ['children', 'id', 'block', 'className', 'danger', 'disabled', 'href', 'loading_state', 'nClicks', 'shape', 'style', 'target', 'type']
+    def __init__(self, children=None, id=Component.UNDEFINED, className=Component.UNDEFINED, style=Component.UNDEFINED, type=Component.UNDEFINED, href=Component.UNDEFINED, target=Component.UNDEFINED, block=Component.UNDEFINED, danger=Component.UNDEFINED, disabled=Component.UNDEFINED, shape=Component.UNDEFINED, size=Component.UNDEFINED, nClicks=Component.UNDEFINED, loading_state=Component.UNDEFINED, **kwargs):
+        self._prop_names = ['children', 'id', 'block', 'className', 'danger', 'disabled', 'href', 'loading_state', 'nClicks', 'shape', 'size', 'style', 'target', 'type']
         self._type = 'AntdButton'
         self._namespace = 'feffery_antd_components'
         self._valid_wildcard_attributes =            []
-        self.available_properties = ['children', 'id', 'block', 'className', 'danger', 'disabled', 'href', 'loading_state', 'nClicks', 'shape', 'style', 'target', 'type']
+        self.available_properties = ['children', 'id', 'block', 'className', 'danger', 'disabled', 'href', 'loading_state', 'nClicks', 'shape', 'size', 'style', 'target', 'type']
         self.available_wildcard_properties =            []
         _explicit_args = kwargs.pop('_explicit_args')
         _locals = locals()

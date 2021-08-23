@@ -7,7 +7,7 @@ import 'antd/dist/antd.css';
 export default class AntdButton extends Component {
     render() {
         // 取得必要属性或参数
-        const { id, children, className, style, setProps, type, href, target, block, danger, disabled, shape, loading_state } = this.props;
+        const { id, children, className, style, setProps, type, href, target, block, danger, disabled, shape, size, loading_state } = this.props;
 
         var { nClicks } = this.props;
 
@@ -31,6 +31,7 @@ export default class AntdButton extends Component {
                 danger={danger}
                 disabled={disabled}
                 shape={shape}
+                size={size}
                 onClick={updateClick}
                 data-dash-is-loading={
                     (loading_state && loading_state.is_loading) || undefined
@@ -75,6 +76,9 @@ AntdButton.propTypes = {
 
     // 设置按钮形状（circle：圆形，round：圆角矩形，默认不设置，即正常矩形）
     shape: PropTypes.string,
+
+    // 设置按钮大小尺寸，可选的有'small'、'middle'和'large'，默认为'middle'
+    size: PropTypes.string,
 
     // 记录按钮从渲染后开始被点击的次数，默认为0
     nClicks: PropTypes.number,
