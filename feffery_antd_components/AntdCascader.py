@@ -11,7 +11,17 @@ Keyword arguments:
 
 - id (string; optional)
 
+- bordered (boolean; optional)
+
+- changeOnSelect (boolean; default False)
+
 - className (string; optional)
+
+- defaultValue (list of strings; optional)
+
+- disabled (boolean; optional)
+
+- expandTrigger (string; optional)
 
 - loading_state (dict; optional)
 
@@ -28,14 +38,22 @@ Keyword arguments:
 
 - options (optional)
 
-- style (dict; optional)"""
+- placeholder (string; optional)
+
+- popupPlacement (string; optional)
+
+- size (string; optional)
+
+- style (dict; optional)
+
+- value (list of strings; optional)"""
     @_explicitize_args
-    def __init__(self, id=Component.UNDEFINED, className=Component.UNDEFINED, style=Component.UNDEFINED, options=Component.UNDEFINED, loading_state=Component.UNDEFINED, **kwargs):
-        self._prop_names = ['id', 'className', 'loading_state', 'options', 'style']
+    def __init__(self, id=Component.UNDEFINED, className=Component.UNDEFINED, style=Component.UNDEFINED, options=Component.UNDEFINED, disabled=Component.UNDEFINED, changeOnSelect=Component.UNDEFINED, size=Component.UNDEFINED, bordered=Component.UNDEFINED, placeholder=Component.UNDEFINED, defaultValue=Component.UNDEFINED, value=Component.UNDEFINED, expandTrigger=Component.UNDEFINED, popupPlacement=Component.UNDEFINED, loading_state=Component.UNDEFINED, **kwargs):
+        self._prop_names = ['id', 'bordered', 'changeOnSelect', 'className', 'defaultValue', 'disabled', 'expandTrigger', 'loading_state', 'options', 'placeholder', 'popupPlacement', 'size', 'style', 'value']
         self._type = 'AntdCascader'
         self._namespace = 'feffery_antd_components'
         self._valid_wildcard_attributes =            []
-        self.available_properties = ['id', 'className', 'loading_state', 'options', 'style']
+        self.available_properties = ['id', 'bordered', 'changeOnSelect', 'className', 'defaultValue', 'disabled', 'expandTrigger', 'loading_state', 'options', 'placeholder', 'popupPlacement', 'size', 'style', 'value']
         self.available_wildcard_properties =            []
         _explicit_args = kwargs.pop('_explicit_args')
         _locals = locals()

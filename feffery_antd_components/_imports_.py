@@ -17,6 +17,7 @@ from .AntdModal import AntdModal
 from .AntdNotification import AntdNotification
 from .AntdPagination import AntdPagination
 from .AntdPopover import AntdPopover
+from .AntdRadioGroup import AntdRadioGroup
 from .AntdResult import AntdResult
 from .AntdSelect import AntdSelect
 from .AntdSkeleton import AntdSkeleton
@@ -65,6 +66,7 @@ __all__ = [
     "AntdNotification",
     "AntdPagination",
     "AntdPopover",
+    "AntdRadioGroup",
     "AntdResult",
     "AntdSelect",
     "AntdSkeleton",

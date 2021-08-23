@@ -22,9 +22,26 @@ export default class AntdCascader extends Component {
             style,
             className,
             options,
+            changeOnSelect,
+            size,
+            bordered,
+            disabled,
+            placeholder,
+            defaultValue,
+            expandTrigger,
+            popupPlacement,
             setProps,
             loading_state
         } = this.props;
+
+
+        const filter = (inputValue, path) => {
+            return path.some(option => option.label.toLowerCase().indexOf(inputValue.toLowerCase()) > -1);
+        }
+
+        const onSelect = (e) => {
+            setProps({ value: e })
+        }
 
         // 返回定制化的前端部件
         return (
@@ -34,6 +51,16 @@ export default class AntdCascader extends Component {
                     className={className}
                     style={{ ...{ width: '100%' }, ...style }}
                     options={options}
+                    changeOnSelect={changeOnSelect}
+                    size={size}
+                    bordered={bordered}
+                    disabled={disabled}
+                    placeholder={placeholder}
+                    defaultValue={defaultValue}
+                    popupPlacement={popupPlacement}
+                    expandTrigger={expandTrigger}
+                    showSearch={filter}
+                    onChange={onSelect}
                     data-dash-is-loading={
                         (loading_state && loading_state.is_loading) || undefined
                     }
@@ -50,7 +77,10 @@ const PropOptionNodeShape = {
     value: PropTypes.string.isRequired,
 
     // 选项对应显示的文字标题
-    label: PropTypes.string.isRequired
+    label: PropTypes.string.isRequired,
+
+    // 设置是否禁止选中
+    disabled: PropTypes.bool,
 
 };
 
@@ -71,6 +101,34 @@ AntdCascader.propTypes = {
 
     // 组织选项层级结构对应的json数据
     options: optionDataPropTypes.isRequired,
+
+    // 设置是否禁用组件
+    disabled: PropTypes.bool,
+
+    // 设置是否任意节点被选择都会被触发选值改变回调
+    // 而不一定非要选中末端叶节点
+    changeOnSelect: PropTypes.bool,
+
+    // 设置组件尺寸大小，可选的有'small'、'middle'及'large'，默认为'middle'
+    size: PropTypes.string,
+
+    // 设置是否渲染边框
+    bordered: PropTypes.bool,
+
+    // 设置选择框默认填充说明文字
+    placeholder: PropTypes.string,
+
+    // 设置默认的选中项
+    defaultValue: PropTypes.arrayOf(PropTypes.string),
+
+    // 对应回调中用户已选择的值
+    value: PropTypes.arrayOf(PropTypes.string),
+
+    // 设置子菜单展开交互方式，可选的有'click'和'hover'，默认为'click'
+    expandTrigger: PropTypes.string,
+
+    // 设置悬浮层的弹出位置，可选的有'bottomLeft'、'bottomRight'、'topLeft'与'topRight'，默认为'bottomLeft'
+    popupPlacement: PropTypes.string,
 
     loading_state: PropTypes.shape({
         /**
@@ -95,4 +153,6 @@ AntdCascader.propTypes = {
 };
 
 // 设置默认参数
-AntdCascader.defaultProps = {}
+AntdCascader.defaultProps = {
+    changeOnSelect: false
+}

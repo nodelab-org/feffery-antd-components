@@ -84,6 +84,8 @@ pip install git+https://github.com/CNFeffery/feffery-antd-components.git
 - 抽屉：`AntdDrawer`
 - 气泡卡片：`AntdPopover`
 - 空状态：`AntdEmpty`
+- 级联选择：`AntdCascader`
+- 单选框：`AntdRadio`
 
 ## 3 说明文档
 
@@ -91,9 +93,7 @@ pip install git+https://github.com/CNFeffery/feffery-antd-components.git
 
 ## 4 TODO计划
 
-- 级联选择：`AntdCascader`
 - 表单：`AntdForm`
-- 单选框：`AntdRadio`
 - 卡片：`AntdCard`
 - 头像：`AntdAvatar`
 - 徽标数：`AntdBadge`

@@ -196,6 +196,11 @@ app.layout = html.Div(
                             fac.AntdDivider(),
 
                             fac.AntdCascader(
+                                id='cascader-demo',
+                                changeOnSelect=True,
+                                placeholder='请选择：',
+                                expandTrigger='hover',
+                                popupPlacement='topLeft',
                                 options=[
                                     {
                                         'value': 'zhejiang',
@@ -223,13 +228,14 @@ app.layout = html.Div(
                                                 'children': [
                                                     {
                                                         'value': 'zhonghuamen',
-                                                        'label': 'Zhong Hua Men',
+                                                        'label': 'Zhong Hua Men'
                                                     },
                                                 ],
                                             },
                                         ],
                                     },
-                                ]
+                                ],
+
                             )
                         ],
                         direction='vertical',
@@ -552,10 +558,7 @@ app.layout = html.Div(
                                 title='测试内容',
                                 placement='bottom',
                                 trigger='click',
-                                contentChildrenIndexes=[1],
-                                overlayInnerStyle={
-                                    'border': '1px solid red'
-                                }
+                                contentChildrenIndexes=[1]
                             ),
                             fac.AntdPopover(
                                 fac.AntdInput(
@@ -564,6 +567,30 @@ app.layout = html.Div(
                                 ),
                                 title='测试内容',
                                 trigger='focus'
+                            ),
+
+                            fac.AntdDivider(),
+
+                            fac.AntdRadioGroup(
+                                id='radio-group-demo',
+                                options=[
+                                    {
+                                        'label': '选项1', 'value': '选项1'
+                                    },
+                                    {
+                                        'label': '选项2', 'value': '选项2'
+                                    },
+                                    {
+                                        'label': '选项3', 'value': '选项3'
+                                    },
+                                    {
+                                        'label': '选项4', 'value': '选项4', 'disabled': True
+                                    }
+                                ],
+                                defaultValue='选项2',
+                                optionType='button',
+                                buttonStyle='solid',
+                                size='large'
                             )
                         ],
                         direction='vertical',
@@ -598,7 +625,9 @@ app.layout = html.Div(
      Input('checkbox-demo', 'checked'),
      Input('checkbox-group-demo', 'value'),
      Input('switch-demo', 'checked'),
-     Input('tree-select-demo', 'value')],
+     Input('tree-select-demo', 'value'),
+     Input('cascader-demo', 'value'),
+     Input('radio-group-demo', 'value')],
     [State('checkbox-demo', 'checked'),
      State('checkbox-group-demo', 'value')],
     prevent_initial_call=True
@@ -613,6 +642,8 @@ def test(default_input_value,
          checkbox_group_value,
          switch_checked,
          tree_select_demo_value,
+         cascader_demo_value,
+         radio_group_demo_value,
          checkbox_checked_state,
          checkbox_group_value_state):
 

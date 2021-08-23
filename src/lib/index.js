@@ -45,6 +45,7 @@ import AntdDrawer from './components/AntdDrawer.react'
 import AntdPopover from './components/AntdPopover.react'
 import AntdEmpty from './components/AntdEmpty.react'
 import AntdCascader from './components/AntdCascader.react'
+import AntdRadioGroup from './components/AntdRadioGroup.react'
 
 export {
     AntdDatePicker,
@@ -92,5 +93,6 @@ export {
     AntdDrawer,
     AntdPopover,
     AntdEmpty,
-    AntdCascader
+    AntdCascader,
+    AntdRadioGroup
 };
