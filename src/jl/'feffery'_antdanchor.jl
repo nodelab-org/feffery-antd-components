@@ -19,9 +19,10 @@ Those elements have the following types:
   - `prop_name` (String; optional): Holds which property is loading
   - `component_name` (String; optional): Holds the name of the component that is loading
 - `style` (Dict; optional)
+- `targetOffset` (Real; optional)
 """
 function 'feffery'_antdanchor(; kwargs...)
-        available_props = Symbol[:id, :align, :className, :containerId, :linkDict, :loading_state, :style]
+        available_props = Symbol[:id, :align, :className, :containerId, :linkDict, :loading_state, :style, :targetOffset]
         wild_props = Symbol[]
         return Component("'feffery'_antdanchor", "AntdAnchor", "feffery_antd_components", available_props, wild_props; kwargs...)
 end

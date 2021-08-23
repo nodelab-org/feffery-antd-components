@@ -10,7 +10,7 @@ const { Link } = Anchor;
 export default class AntdAnchor extends Component {
     render() {
         // 取得必要属性或参数
-        var { id, className, style, linkDict, align, containerId, loading_state } = this.props;
+        var { id, className, style, linkDict, align, containerId, targetOffset, loading_state } = this.props;
 
 
         function renderAnchorTree(obj) {
@@ -65,7 +65,8 @@ export default class AntdAnchor extends Component {
                                 id: id,
                                 className: className,
                                 style: style,
-                                getContainer: containerId ? () => document.getElementById(containerId) : containerId
+                                getContainer: containerId ? () => document.getElementById(containerId) : containerId,
+                                targetOffset: targetOffset
                             },
                             children: linkDict
                         }
@@ -108,6 +109,9 @@ AntdAnchor.propTypes = {
 
     // 设置其绑定的容器id
     containerId: PropTypes.string,
+
+    // 设置锚点位移偏移量
+    targetOffset: PropTypes.number,
 
     loading_state: PropTypes.shape({
         /**

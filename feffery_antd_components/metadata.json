@@ -178,6 +178,13 @@
         "required": false,
         "description": ""
       },
+      "targetOffset": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": ""
+      },
       "loading_state": {
         "type": {
           "name": "shape",
