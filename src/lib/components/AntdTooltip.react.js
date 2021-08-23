@@ -28,6 +28,7 @@ export default class AntdTooltip extends Component {
             overlayStyle,
             overlayInnerStyle,
             trigger,
+            containerId,
             setProps
         } = this.props;
 
@@ -46,7 +47,7 @@ export default class AntdTooltip extends Component {
                 overlayStyle={overlayStyle}
                 overlayInnerStyle={overlayInnerStyle}
                 trigger={trigger}
-                getPopupContainer={(triggerNode) => triggerNode.parentNode}>
+                getPopupContainer={containerId ? () => document.getElementById(containerId) : containerId}>
                 {children}
             </Tooltip>
         );
@@ -102,6 +103,9 @@ AntdTooltip.propTypes = {
             PropTypes.arrayOf(PropTypes.string)
         ]
     ),
+
+    // 设置绑定的容器id
+    containerId: PropTypes.string,
 
     loading_state: PropTypes.shape({
         /**

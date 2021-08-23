@@ -512,12 +512,38 @@ app.layout = html.Div(
                             html.Div(
                                 fac.AntdDrawer(
                                     html.Div(
-                                        '测试'*1000,
+                                        ['测试'*2000, fac.AntdPopover(
+                                            [
+                                                fac.AntdButton(
+                                                    '点击查看代码', type='link'),
+
+                                                dcc.Markdown('''
+                ```Python
+                html.Div(
+                    [
+                        fac.AntdButton('default'),
+                        fac.AntdButton('primary', type='primary'),
+                        fac.AntdButton('dashed', type='dashed'),
+                        fac.AntdButton('link', type='link'),
+                        fac.AntdButton('text', type='text')
+                    ]
+                )
+                ```
+                ''')
+                                            ],
+                                            contentChildrenIndexes=[1],
+                                            placement='rightBottom',
+                                            trigger='click',
+                                            containerId='popover-container-demo'
+                                        ),
+                                            '测试'*2000],
+                                        id='popover-container-demo',
                                         style={
                                             'overflowY': 'auto',
                                             'height': '400px',
                                             'border': '1px dashed lightgrey',
-                                            'padding': '10px'
+                                            'padding': '10px',
+                                            'position': 'absolute'
                                         }
                                     ),
                                     id='drawer-demo',

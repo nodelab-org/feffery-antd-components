@@ -30,6 +30,7 @@ export default class AntdPopover extends Component {
             overlayInnerStyle,
             trigger,
             contentChildrenIndexes,
+            containerId,
             setProps
         } = this.props;
 
@@ -65,7 +66,7 @@ export default class AntdPopover extends Component {
                 overlayStyle={overlayStyle}
                 overlayInnerStyle={overlayInnerStyle}
                 trigger={trigger}
-                getPopupContainer={(triggerNode) => triggerNode.parentNode}>{realChildren}</Popover>
+                getPopupContainer={containerId ? () => document.getElementById(containerId) : containerId}>{realChildren}</Popover>
         );
     }
 }
@@ -126,6 +127,9 @@ AntdPopover.propTypes = {
     // 为了绕开dash非children属性不能传入组件的限制，用于指定children
     // 属性中的哪些位置的元素应当作为气泡卡片内嵌的元素
     contentChildrenIndexes: PropTypes.arrayOf(PropTypes.number),
+
+    // 设置绑定的容器id
+    containerId: PropTypes.string,
 
     loading_state: PropTypes.shape({
         /**
