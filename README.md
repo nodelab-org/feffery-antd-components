@@ -104,8 +104,7 @@ pip install git+https://github.com/CNFeffery/feffery-antd-components.git
 - 评论：`AntdComment`
 - 统计数值：`AntdStatistic`
 - 时间轴：`AntdTimeline`
-- 上传：`AntdUpload`
 - 进度条：`AntdProgress`
 - 回到顶部：`AntdBackTop`
 - 图片：`AntdImage`
-
+- 上传：`AntdUpload`
