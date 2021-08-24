@@ -4,7 +4,6 @@ import { Collapse } from 'antd';
 import { isNil } from 'ramda';
 import { RightSquareOutlined } from '@ant-design/icons';
 import 'antd/dist/antd.css';
-import './styles.css'
 
 const { Panel } = Collapse;
 
@@ -66,7 +65,6 @@ export default class AntdCollapse extends Component {
                     style={style}
                     bordered={bordered}
                     ghost={ghost}
-                    expandIcon={({ isActive }) => <RightSquareOutlined rotate={isActive ? 90 : 0} style={{ fontSize: '1rem', top: '4px' }} />}
                     collapsible={collapsible}
                     data-dash-is-loading={
                         (loading_state && loading_state.is_loading) || undefined
@@ -90,7 +88,6 @@ export default class AntdCollapse extends Component {
                 style={style}
                 bordered={bordered}
                 ghost={ghost}
-                expandIcon={({ isActive }) => <RightSquareOutlined rotate={isActive ? 90 : 0} style={{ fontSize: '1rem', top: '4px' }} />}
                 collapsible={collapsible}
                 data-dash-is-loading={
                     (loading_state && loading_state.is_loading) || undefined

@@ -25,6 +25,24 @@ app = dash.Dash(__name__)
 
 app.layout = html.Div(
     [
+        fac.AntdCollapse(
+            dcc.Markdown('''
+                ```Python
+                html.Div(
+                    [
+                        fac.AntdButton('default'),
+                        fac.AntdButton('primary', type='primary'),
+                        fac.AntdButton('dashed', type='dashed'),
+                        fac.AntdButton('link', type='link'),
+                        fac.AntdButton('text', type='text')
+                    ]
+                )
+                ```
+                '''),
+            title='查看代码',
+            ghost=True,
+            collapsible='header'
+        ),
         fac.AntdResult(
             id='result-demo',
             title='success示例',
