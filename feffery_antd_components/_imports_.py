@@ -32,6 +32,7 @@ from .AntdTooltip import AntdTooltip
 from .AntdTransfer import AntdTransfer
 from .AntdTree import AntdTree
 from .AntdTreeSelect import AntdTreeSelect
+from .AntdUpload import AntdUpload
 from .AntdCol import AntdCol
 from .AntdRow import AntdRow
 from .AntdContent import AntdContent
@@ -81,6 +82,7 @@ __all__ = [
     "AntdTransfer",
     "AntdTree",
     "AntdTreeSelect",
+    "AntdUpload",
     "AntdCol",
     "AntdRow",
     "AntdContent",

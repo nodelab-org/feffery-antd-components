@@ -8,6 +8,7 @@ import feffery_antd_components as fac
 import dash_html_components as html
 from dash.dependencies import Input, Output, State
 
+
 demo_df = pd.DataFrame({
     '排序列1': np.random.randint(0, 100, 10000),
     '排序列2': np.random.randint(0, 100, 10000),
@@ -25,6 +26,12 @@ app = dash.Dash(__name__)
 
 app.layout = html.Div(
     [
+        fac.AntdUpload(
+            apiUrl='http://10.10.16.120:8000/upload/',
+            fileListMaxLength=1,
+            buttonContent='点击上传.dxf格式文件'
+        ),
+        fac.AntdDivider(),
         fac.AntdCollapse(
             dcc.Markdown('''
                 ```Python
@@ -887,4 +894,4 @@ def draw_test(nClicks, visible):
 
 
 if __name__ == '__main__':
-    app.run_server(debug=True, port=8118)
+    app.run_server(debug=False, port=8118, host='0.0.0.0')

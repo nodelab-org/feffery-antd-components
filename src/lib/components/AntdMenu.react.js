@@ -65,7 +65,7 @@ export default class AntdMenu extends Component {
             loading_state
         } = this.props;
 
-        if (!currentKey && defaultSelectedKey){
+        if (!currentKey && defaultSelectedKey) {
             currentKey = defaultSelectedKey
         }
 
@@ -160,6 +160,7 @@ export default class AntdMenu extends Component {
                         style={style}
                         mode={mode}
                         theme={theme}
+                        selectedKeys={[currentKey]}
                         defaultOpenKeys={defaultOpenKeys}
                         defaultSelectedKeys={defaultSelectedKey ? [defaultSelectedKey] : defaultSelectedKey}
                         selectedKeys={[currentKey]}
@@ -181,6 +182,7 @@ export default class AntdMenu extends Component {
                     style={style}
                     mode={mode}
                     theme={theme}
+                    selectedKeys={[currentKey]}
                     defaultOpenKeys={defaultOpenKeys}
                     defaultSelectedKeys={defaultSelectedKey ? [defaultSelectedKey] : defaultSelectedKey}
                     onSelect={listenSelected}
