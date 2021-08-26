@@ -1,19 +1,22 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, {useEffect, useState} from "react";
 import { Tabs } from 'antd';
 import { isNil, omit } from 'ramda';
 import 'antd/dist/antd.css';
+import { DndProvider, DragSource, DropTarget } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
+import PropTypes from "prop-types";
 
 const { TabPane } = Tabs;
 
-const parseChildrenToArray = children => {
+// coerce children to array if not already
+const parseChildrenToArray = (children) => {
     if (children && !Array.isArray(children)) {
         return [children];
     }
     return children;
 };
 
-const resolveChildProps = child => {
+const resolveChildProps = (child) => {
     // This may need to change in the future if https://github.com/plotly/dash-renderer/issues/84 is addressed
     if (
         // disabled is a defaultProp (so it's always set)
@@ -32,85 +35,171 @@ const resolveChildProps = child => {
     }
 };
 
-// 定义标签页部件AntdTabs，api参数参考https://ant.design/components/tabs-cn/
-export default class AntdTabs extends Component {
+// Drag & Drop node
+function TabNode (props) {
+    const { connectDragSource, connectDropTarget, children } = props;
+    return (
+        connectDragSource(connectDropTarget(children))
+    )
+}
 
-    constructor(props) {
-        super(props)
-        // 初始化value
-        if (props.defaultActiveKey) {
-            // 当defaultValue不为空时，为value初始化defaultValue对应的value值
-            props.setProps({ activeKey: props.defaultActiveKey })
+export default function AntdTabs (props) {
+
+    const [order,setOrder] = useState([])
+
+    // feffery
+    let {
+        id,
+        children,
+        className,
+        style,
+        defaultActiveKey,
+        activeKey,
+        size,
+        tabPosition,
+        type,
+        setProps,
+        loading_state
+    } = props;
+
+    children = parseChildrenToArray(children)
+
+    const tabPanes = children.map(
+        (child) => {
+            let childProps = resolveChildProps(child)
+
+            const {
+                id,
+                className,
+                style,
+                tab,
+                disabled,
+                // closable,
+                loading_state,
+                ...otherProps
+            } = childProps;
+
+            return (
+                <TabPane
+                    id={id}
+                    className={className}
+                    style={style}
+                    tab={tab}
+                    disabled={disabled}
+                    // closable={closable}
+                    loading_state={loading_state}
+                    {...omit(
+                        ['setProps', 'persistence', 'persistence_type', 'persisted_props'],
+                        otherProps
+                    )}>
+                    {child}
+                </TabPane>
+            );
         }
+    )
+
+    const orderTabPanes = tabPanes.slice().sort((a, b) => {
+        const orderA = order.indexOf(a.key);
+        const orderB = order.indexOf(b.key);
+
+        if (orderA !== -1 && orderB !== -1) {
+        return orderA - orderB;
+        }
+        if (orderA !== -1) {
+        return -1;
+        }
+        if (orderB !== -1) {
+        return 1;
+        }
+
+        const ia = tabPanes.indexOf(a);
+        const ib = tabPanes.indexOf(b);
+
+        return ia - ib;
+    });
+
+    const moveTabNode = (dragKey, hoverKey) => {
+        setOrder((order) => {
+            const newOrder = order.slice();
+    
+            children.forEach((child) => {
+            if (newOrder.indexOf(child.key === -1)) {
+                newOrder.push(child.key);
+            }
+            });
+    
+            const dragIndex = newOrder.indexOf(dragKey);
+            const hoverIndex = newOrder.indexOf(hoverKey);
+    
+            newOrder.splice(dragIndex, 1);
+            newOrder.splice(hoverIndex, 0, dragKey);
+            return newOrder
+        })
+    };
+
+    const cardTarget = {
+
+        drop(props, monitor) {
+
+            const dragKey = monitor.getItem().index;
+            const hoverKey = props.index;
+        
+            if (dragKey === hoverKey) {
+                return;
+            }
+        
+            props.moveTabNode(dragKey, hoverKey);
+            monitor.getItem().index = hoverKey;
+
+        },
+
+    };
+  
+    const cardSource = {
+
+        beginDrag(props) {
+
+            return {
+                id: props.id,
+                index: props.index,
+            };
+        },
+
+    };
+
+    const WrapTabNode = DropTarget('DND_NODE', cardTarget, connect => ({
+        connectDropTarget: connect.dropTarget(),
+    }))(
+        DragSource('DND_NODE', cardSource, (connect, monitor) => ({
+        connectDragSource: connect.dragSource(),
+        isDragging: monitor.isDragging(),
+        }))(TabNode),
+    );
+  
+    const renderTabBar = (props, DefaultTabBar) => (
+        <DefaultTabBar {...props}>
+        {node => (
+            <WrapTabNode key={node.key} index={node.key} moveTabNode={moveTabNode}>
+            {node}
+            </WrapTabNode>
+        )}
+        </DefaultTabBar>
+    );
+
+    const onChange = e => {
+        setProps({ activeKey: e })
     }
 
-    render() {
-        // 取得必要属性或参数
-        let {
-            id,
-            children,
-            className,
-            style,
-            defaultActiveKey,
-            activeKey,
-            size,
-            tabPosition,
-            type,
-            setProps,
-            loading_state
-        } = this.props;
+    const onEdit = (targetKey, action) => {
 
-        children = parseChildrenToArray(children)
+        // console.log({ targetKey, action })
+        setProps({ latestDeletePane: targetKey })
+    }
 
-        const tabPanes = children.map(
-            (child) => {
-                let childProps = resolveChildProps(child)
-
-                const {
-                    id,
-                    className,
-                    style,
-                    tab,
-                    key,
-                    disabled,
-                    closable,
-                    loading_state,
-                    ...otherProps
-                } = childProps;
-
-                return (
-                    <TabPane
-                        id={id}
-                        className={className}
-                        style={style}
-                        tab={tab}
-                        key={key}
-                        disabled={disabled}
-                        closable={closable}
-                        loading_state={loading_state}
-                        {...omit(
-                            ['setProps', 'persistence', 'persistence_type', 'persisted_props'],
-                            otherProps
-                        )}>
-                        {child}
-                    </TabPane>
-                );
-            }
-        )
-
-        const onChange = e => {
-            setProps({ activeKey: e })
-        }
-
-        const onEdit = (targetKey, action) => {
-
-            console.log({ targetKey, action })
-
-            setProps({ latestDeletePane: targetKey })
-        }
-
-        return (
+    return (
+        <DndProvider backend={HTML5Backend}>
             <Tabs id={id}
+                renderTabBar={renderTabBar} 
                 className={className}
                 style={style}
                 defaultActiveKey={defaultActiveKey}
@@ -124,15 +213,15 @@ export default class AntdTabs extends Component {
                 data-dash-is-loading={
                     (loading_state && loading_state.is_loading) || undefined
                 }>
-                {tabPanes}
+                {orderTabPanes}
             </Tabs>
-        );
-    }
+        </DndProvider>
+    );
+
 }
 
-// 定义参数或属性
 AntdTabs.propTypes = {
-    // 部件id
+    // id
     id: PropTypes.string,
 
     /**
@@ -140,28 +229,28 @@ AntdTabs.propTypes = {
      */
     children: PropTypes.node,
 
-    // css类名
+    // css className
     className: PropTypes.string,
 
-    // 自定义css字典
+    // css inline styles
     style: PropTypes.object,
 
-    // 设置默认激活的标签页面板对应key
+    // key
     defaultActiveKey: PropTypes.string,
 
-    // 设置标签页放置位置，可选的有'top'、'left'、'right'和'bottom'
+    // 'top'、'left'、'right', 'bottom'
     tabPosition: PropTypes.string,
 
-    // 设置组件大小尺寸，可选的有'small'、'default'和'large'
+    // 'small'、'default' 'large'
     size: PropTypes.string,
 
-    // 设置标签页渲染类型，可选的有'line'、'card'和'editable-card'，默认为'line'
+    // 'line'、'card' 'editable-card' 'line'
     type: PropTypes.string,
 
-    // 对应当前被选中的标签页面板对应key
+    // key
     activeKey: PropTypes.string,
 
-    // 对应最近一次进行删除操作的标签页面板对应key
+    // key
     latestDeletePane: PropTypes.string,
 
     loading_state: PropTypes.shape({
@@ -186,6 +275,9 @@ AntdTabs.propTypes = {
     setProps: PropTypes.func
 };
 
-// 设置默认参数
 AntdTabs.defaultProps = {
-}
+
+};
+
+
+
