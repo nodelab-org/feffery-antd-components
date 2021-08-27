@@ -9,11 +9,10 @@ const parseChildrenToArray = children => {
     return children;
 };
 
-// 定义标签页面板部件AntdTabPane，api参数参考https://ant.design/components/tabs-cn/
+// https://ant.design/components/tabs-cn/
 export default class AntdTabPane extends Component {
     render() {
-        // 取得必要属性或参数
-        let {
+        const {
             id,
             children,
             className,
@@ -21,12 +20,10 @@ export default class AntdTabPane extends Component {
             tab,
             key,
             disabled,
-            closable,
+            // closable,
             setProps,
             loading_state
         } = this.props;
-
-        children = parseChildrenToArray(children)
 
         return (
             <div id={id}
@@ -35,8 +32,8 @@ export default class AntdTabPane extends Component {
                 tab={tab}
                 key={key}
                 disabled={disabled}
-                closable={closable}
-                children={children}
+                // closable={closable}
+                children={parseChildrenToArray(children)}
                 data-dash-is-loading={
                     (loading_state && loading_state.is_loading) || undefined
                 }>
@@ -45,9 +42,9 @@ export default class AntdTabPane extends Component {
     }
 }
 
-// 定义参数或属性
+//
 AntdTabPane.propTypes = {
-    // 部件id
+    // id
     id: PropTypes.string,
 
     /**
@@ -55,23 +52,23 @@ AntdTabPane.propTypes = {
      */
     children: PropTypes.node,
 
-    // css类名
+    // css
     className: PropTypes.string,
 
-    // 自定义css字典
+    // 
     style: PropTypes.object,
 
-    // 设置选项卡标题文字内容
+    // 
     tab: PropTypes.string,
 
-    // 设置标签面板id信息
+    // 
     key: PropTypes.string,
 
-    // 设置是否禁用当前的标签页面板
+    // 
     disabled: PropTypes.bool,
 
-    // 设置当前标签页面板是否可被关闭，默认为true
-    closable: PropTypes.bool,
+    // default true
+    // closable: PropTypes.bool,
 
     loading_state: PropTypes.shape({
         /**
@@ -95,6 +92,6 @@ AntdTabPane.propTypes = {
     setProps: PropTypes.func
 };
 
-// 设置默认参数
+// 
 AntdTabPane.defaultProps = {
 }
