@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { } from 'react';
 import PropTypes from 'prop-types';
 import 'antd/dist/antd.css';
 
@@ -10,42 +10,44 @@ const parseChildrenToArray = children => {
 };
 
 // https://ant.design/components/tabs-cn/
-export default class AntdTabPane extends Component {
-    render() {
-        const {
-            id,
-            children,
-            className,
-            style,
-            tab,
-            key,
-            disabled,
-            // closable,
-            setProps,
-            loading_state
-        } = this.props;
+export default function AntdTabPane (props) {
 
-        return (
-            <div id={id}
-                className={className}
-                style={style}
-                tab={tab}
-                key={key}
-                disabled={disabled}
-                // closable={closable}
-                children={parseChildrenToArray(children)}
-                data-dash-is-loading={
-                    (loading_state && loading_state.is_loading) || undefined
-                }>
-            </div>
-        );
-    }
+    const {
+        id,
+        key,
+        children,
+        className,
+        style,
+        tab,
+        disabled,
+        // closable,
+        loading_state,
+        ...otherProps
+    } = props;
+
+    return (
+        <div id={id}
+            children={parseChildrenToArray(children)}
+            className={className}
+            style={style}
+            tab={tab}
+            key={id}
+            // key={key}
+            disabled={disabled}
+            // closable={closable} 
+            data-dash-is-loading={
+                (loading_state && loading_state.is_loading) || undefined
+            }
+            >
+        </div>
+    );
+    
 }
 
 //
 AntdTabPane.propTypes = {
     // id
-    id: PropTypes.string,
+    id: PropTypes.string.isRequired,
 
     /**
      * The content of the tab - will only be displayed if this tab is selected
@@ -62,7 +64,7 @@ AntdTabPane.propTypes = {
     tab: PropTypes.string,
 
     // 
-    key: PropTypes.string,
+    // key: PropTypes.string,
 
     // 
     disabled: PropTypes.bool,
@@ -94,4 +96,8 @@ AntdTabPane.propTypes = {
 
 // 
 AntdTabPane.defaultProps = {
+    className:"antd-tabpane",
+    style:{},
+    tab:"New Tab",
+    disabled:false
 }

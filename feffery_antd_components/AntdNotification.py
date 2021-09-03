@@ -8,51 +8,35 @@ class AntdNotification(Component):
 
 
 Keyword arguments:
-
 - id (string; optional)
-
-- bottom (number; optional)
-
 - className (string; optional)
-
-- description (string; optional)
-
-- duration (number; optional)
-
-- loading_state (dict; optional)
-
-    `loading_state` is a dict with keys:
-
-    - component_name (string; optional):
-        Holds the name of the component that is loading.
-
-    - is_loading (boolean; optional):
-        Determines if the component is loading or not.
-
-    - prop_name (string; optional):
-        Holds which property is loading.
-
-- message (string; optional)
-
-- placement (string; optional)
-
 - style (dict; optional)
-
+- loading_state (dict; optional): loading_state has the following type: dict containing keys 'is_loading', 'prop_name', 'component_name'.
+Those keys have the following types:
+  - is_loading (boolean; optional): Determines if the component is loading or not
+  - prop_name (string; optional): Holds which property is loading
+  - component_name (string; optional): Holds the name of the component that is loading
+- message (string; optional)
+- description (string; optional)
+- type (string; default 'default')
+- placement (string; optional)
 - top (number; optional)
-
-- type (string; default 'default')"""
+- bottom (number; optional)
+- duration (number; optional)"""
     @_explicitize_args
     def __init__(self, id=Component.UNDEFINED, className=Component.UNDEFINED, style=Component.UNDEFINED, loading_state=Component.UNDEFINED, message=Component.UNDEFINED, description=Component.UNDEFINED, type=Component.UNDEFINED, placement=Component.UNDEFINED, top=Component.UNDEFINED, bottom=Component.UNDEFINED, duration=Component.UNDEFINED, **kwargs):
-        self._prop_names = ['id', 'bottom', 'className', 'description', 'duration', 'loading_state', 'message', 'placement', 'style', 'top', 'type']
+        self._prop_names = ['id', 'className', 'style', 'loading_state', 'message', 'description', 'type', 'placement', 'top', 'bottom', 'duration']
         self._type = 'AntdNotification'
         self._namespace = 'feffery_antd_components'
         self._valid_wildcard_attributes =            []
-        self.available_properties = ['id', 'bottom', 'className', 'description', 'duration', 'loading_state', 'message', 'placement', 'style', 'top', 'type']
+        self.available_properties = ['id', 'className', 'style', 'loading_state', 'message', 'description', 'type', 'placement', 'top', 'bottom', 'duration']
         self.available_wildcard_properties =            []
+
         _explicit_args = kwargs.pop('_explicit_args')
         _locals = locals()
         _locals.update(kwargs)  # For wildcard attrs
         args = {k: _locals[k] for k in _explicit_args if k != 'children'}
+
         for k in []:
             if k not in args:
                 raise TypeError(

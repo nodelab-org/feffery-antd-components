@@ -8,75 +8,47 @@ class AntdSelect(Component):
 
 
 Keyword arguments:
-
 - id (string; optional)
-
-- allowClear (boolean; default True)
-
 - className (string; optional)
-
-- defaultValue (string | number | list of string | numbers; optional)
-
-- listHeight (number; default 256)
-
-- loading_state (dict; optional)
-
-    `loading_state` is a dict with keys:
-
-    - component_name (string; optional):
-        Holds the name of the component that is loading.
-
-    - is_loading (boolean; optional):
-        Determines if the component is loading or not.
-
-    - prop_name (string; optional):
-        Holds which property is loading.
-
-- maxTagCount (number; default 5)
-
-- mode (string; optional)
-
-- options (list of dicts; optional)
-
-    `options` is a list of dicts with keys:
-
-    - disabled (boolean; optional)
-
-    - label (string
-
-      Or number; required)
-
-    - value (string | number; required) | dict with keys:
-
-    - group (string; required)
-
-    - options (list of dicts; optional)
-
-        `options` is a list of dicts with keys:
-
-        - disabled (boolean; optional)
-
-        - label (string | number; required)
-
-        - value (string | number; required)
-
-- placeholder (string; optional)
-
 - style (dict; optional)
-
-- value (string | number | list of string | numbers; optional)"""
+- options (dict; optional): options has the following type: list of dicts containing keys 'label', 'value', 'disabled'.
+Those keys have the following types:
+  - label (string | number; required)
+  - value (string | number; required)
+  - disabled (boolean; optional) | dict containing keys 'group', 'options'.
+Those keys have the following types:
+  - group (string; required)
+  - options (dict; optional): options has the following type: list of dicts containing keys 'label', 'value', 'disabled'.
+Those keys have the following types:
+  - label (string | number; required)
+  - value (string | number; required)
+  - disabled (boolean; optional)
+- allowClear (boolean; default True)
+- mode (string; optional)
+- placeholder (string; optional)
+- value (string | number | list of string | numbers; optional)
+- defaultValue (string | number | list of string | numbers; optional)
+- maxTagCount (number; default 5)
+- listHeight (number; default 256)
+- loading_state (dict; optional): loading_state has the following type: dict containing keys 'is_loading', 'prop_name', 'component_name'.
+Those keys have the following types:
+  - is_loading (boolean; optional): Determines if the component is loading or not
+  - prop_name (string; optional): Holds which property is loading
+  - component_name (string; optional): Holds the name of the component that is loading"""
     @_explicitize_args
     def __init__(self, id=Component.UNDEFINED, className=Component.UNDEFINED, style=Component.UNDEFINED, options=Component.UNDEFINED, allowClear=Component.UNDEFINED, mode=Component.UNDEFINED, placeholder=Component.UNDEFINED, value=Component.UNDEFINED, defaultValue=Component.UNDEFINED, maxTagCount=Component.UNDEFINED, listHeight=Component.UNDEFINED, loading_state=Component.UNDEFINED, **kwargs):
-        self._prop_names = ['id', 'allowClear', 'className', 'defaultValue', 'listHeight', 'loading_state', 'maxTagCount', 'mode', 'options', 'placeholder', 'style', 'value']
+        self._prop_names = ['id', 'className', 'style', 'options', 'allowClear', 'mode', 'placeholder', 'value', 'defaultValue', 'maxTagCount', 'listHeight', 'loading_state']
         self._type = 'AntdSelect'
         self._namespace = 'feffery_antd_components'
         self._valid_wildcard_attributes =            []
-        self.available_properties = ['id', 'allowClear', 'className', 'defaultValue', 'listHeight', 'loading_state', 'maxTagCount', 'mode', 'options', 'placeholder', 'style', 'value']
+        self.available_properties = ['id', 'className', 'style', 'options', 'allowClear', 'mode', 'placeholder', 'value', 'defaultValue', 'maxTagCount', 'listHeight', 'loading_state']
         self.available_wildcard_properties =            []
+
         _explicit_args = kwargs.pop('_explicit_args')
         _locals = locals()
         _locals.update(kwargs)  # For wildcard attrs
         args = {k: _locals[k] for k in _explicit_args if k != 'children'}
+
         for k in []:
             if k not in args:
                 raise TypeError(
