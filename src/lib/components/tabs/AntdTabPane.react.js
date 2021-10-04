@@ -14,7 +14,7 @@ export default function AntdTabPane (props) {
 
     const {
         id,
-        key,
+        // key,
         children,
         className,
         style,
@@ -31,7 +31,7 @@ export default function AntdTabPane (props) {
             className={className}
             style={style}
             tab={tab}
-            key={id}
+            // key={id}
             // key={key}
             disabled={disabled}
             // closable={closable} 
