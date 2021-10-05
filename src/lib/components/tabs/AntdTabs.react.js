@@ -73,7 +73,7 @@ const renderTabPane = (child, tabKey, n_tabs) => {
             className={className}
             style={style}
             tab={tab}
-            key={tabKey}
+            key={id}
             disabled={disabled}
             closable={n_tabs > 1? true : false}
             loading_state={loading_state}>
@@ -193,7 +193,7 @@ export default function AntdTabs (props) {
 
     
     const onChange = aKey => {
-
+        console.log("onChange callback fired")
         props.setProps({ 
             // "previousActiveKey" : props.activeKey,
             "activeKey" : aKey
@@ -202,7 +202,7 @@ export default function AntdTabs (props) {
     };
 
     const onEdit = (targetKey, action) => {
-        
+        console.log("onEdit callback fired")
         if (action === "remove") {
 
             props.setProps({

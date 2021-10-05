@@ -141,6 +141,7 @@ def get_components_matching_trigger_id_variable(
 def create_layout_tab(index):
     return fac.AntdTabPane(
         id=str(index),
+        # key=str(index), # key == id
         className="antd-tabpane",
         tab=f"New Tab", # tab title
         children=[
@@ -339,28 +340,48 @@ def add_remove_change_tab(
         n_clicks_remove = 0
     if not n_clicks_add and not n_clicks_remove and not keyboard_new_tab and not keyboard_close_tab and not keyboard_move_right and not keyboard_move_left:
         raise PreventUpdate
+    
+    print("")
+    print(children[0])
 
-    if trigger_id == "keyboard-move-to-right-tab":
-        activeKey = int(activeKey)+1
-        if activeKey == len(children):
-            activeKey = 0
-        children = dash.no_update
-    elif trigger_id == "keyboard-move-to-left-tab":
-        activeKey = int(activeKey)-1
-        if activeKey < 0:
-            activeKey = len(children)-1
+    if "keyboard-move-to" in trigger_id:
+        # note that mouse tab change is handled by Tabs component itself
+        
+        last_index = dash.no_update
+        if trigger_id == "keyboard-move-to-right-tab":
+            for i, child in enumerate(children):
+                if child["props"]["id"] == activeKey:
+                    if i < len(children) - 1:
+                        activeKey = children[i+1]["props"]["id"]
+                    else:
+                        activeKey = children[0]["props"]["id"]
+                    break
+        elif trigger_id == "keyboard-move-to-left-tab":
+            for i, child in enumerate(children):
+                if child["props"]["id"] == activeKey:
+                    if i > 0:
+                        activeKey = children[i-1]["props"]["id"]
+                    else:
+                        activeKey = children[-1]["props"]["id"]
+                    break
         children = dash.no_update
     else:
         add = True if (trigger_id == "antd-tabs-main" and on_edit_trigger == "add") or trigger_id == "keyboard-new-tab" else False
         if add:
-            activeKey = len(children)
+            # add tab
             last_index += 1
+            activeKey = str(last_index)
             children.append(create_layout_tab(last_index))
-        else: # delete
+        else: 
+            # delete targetKey tab
             if len(children)>1:
                 if trigger_id == "keyboard-close-tab":
                     targetKey = activeKey
-                activeKey = int(targetKey)-1 if targetKey != "0" else 0
+                for i, child in enumerate(children):
+                    if child["props"]["id"] == targetKey:
+                        activeKey = children[i+1]["props"]["id"] if i<len(children)-1 else children[-2]["props"]["id"]
+                        children.pop(i)
+                        break
                     # for i, child in enumerate(children):
                     #     if str(child["props"]["id"]) == str(targetKey):
                     #         activeKey = i - 1 
@@ -370,11 +391,9 @@ def add_remove_change_tab(
                 # print("")
                 # for i in range(int(activeKey)+1, len(children)):
                 #     children[i]["props"]['id'] = str(i-1)
-                children.pop(int(targetKey))
-
     print("")
     print(f"add_remove_change_tab, trigger_id: {trigger_id}")  
-    return [children, str(activeKey), last_index]
+    return [children, activeKey, last_index]
 
 
 # @app.callback(
@@ -681,7 +700,8 @@ def add_remove_change_tab(
     [
         State({"type1":"graph2D", "index":MATCH}, "graphData"),
         State({"type1":"button-add-graphdata", "index":ALL}, "n_clicks"),
-        State("store-saved-active-key","data")
+        State("store-saved-active-key","data"),
+        State("antd-tabs-main","children")
     ], prevent_initial_call=True
 )
 def update_tab_graphdata(
@@ -689,7 +709,8 @@ def update_tab_graphdata(
     newActiveKey,
     graphdata,
     all_n_clicks_add_graphdata,
-    currentActiveKey
+    currentActiveKey,
+    children
     ):
     '''@usage 
     if user presses button to initialize graphdata (mocking a query), simply update graphdata.
@@ -700,7 +721,7 @@ def update_tab_graphdata(
     else:
         trigger_id = ctx.triggered[0]["prop_id"].split(".")[0]
     if newActiveKey  == None:
-        newActiveKey = "0"
+        newActiveKey = children[0]["props"]["id"]
 
     if "button-add-graphdata" in trigger_id:
         # case 1: graphdata was added
@@ -710,10 +731,11 @@ def update_tab_graphdata(
     else:
         print("")
         print(f"newActiveKey: {newActiveKey}")
-        print(f'ctx.states_list[1][int(newActiveKey)]: {ctx.states_list[1][int(newActiveKey)]}')
-        
+        for i, child in enumerate(children):
+            if children[i]["props"]["id"] == newActiveKey:
+                break
         # user added or deleted a tab, or switched active tab, 
-        if dash.callback_context.states_list[0]["id"]["index"] == ctx.states_list[1][int(newActiveKey)]["id"]["index"]:
+        if dash.callback_context.states_list[0]["id"]["index"] == ctx.states_list[1][i]["id"]["index"]:
             # if the current MATCH is the new active tab
             if graphdata and graphdata["links"]:
                 graphdata["links"] = reset_link_source_target(graphdata["links"])
@@ -730,6 +752,7 @@ def update_tab_graphdata(
         ]
 
 
+
 @app.callback(
     Output("store-saved-active-key","data"),
     [
@@ -737,11 +760,13 @@ def update_tab_graphdata(
     ],
     [
         State("antd-tabs-main","activeKey"),
+        State("antd-tabs-main","children")
     ]
 )
 def update_store_saved_active_key(
     list_pauseAnimation, 
-    newActiveKey
+    newActiveKey,
+    children
     ):
     '''@usage pauseAnimation is always activated by update_tab_graphdata
     '''    
@@ -754,7 +779,7 @@ def update_store_saved_active_key(
     print("update_store_saved_active_key")
     # print(f"newActiveKey: {newActiveKey}")
     if newActiveKey is None:
-        newActiveKey = "0"
+        newActiveKey = children[0]["props"]["id"]
     return newActiveKey
 
 
@@ -792,11 +817,13 @@ def update_store_saved_active_key(
 ],
 [
     State("antd-tabs-main","activeKey"),
+    State("antd-tabs-main","children")
 ])
 def display_selected_nodes_(
     all_nodesSelected,
     all_linksSelected,
-    activeKey
+    activeKey,
+    children
     ):
     ctx = dash.callback_context
     if not ctx.triggered:
@@ -805,12 +832,13 @@ def display_selected_nodes_(
     #     trigger_id = ctx.triggered[0]["prop_id"].split(".")[0]
     if not activeKey:
         raise PreventUpdate
-    # print(" ")
-    # print(f"len(ctx.outputs_list):{len(ctx.outputs_list)}")
+    for i, child in enumerate(children):
+        if child["props"]["id"] == i:
+            break
     list_nodesSelected_out = [dash.no_update] * len(ctx.outputs_list[0])
-    list_nodesSelected_out[int(activeKey)] = json.dumps(all_nodesSelected[int(activeKey)], indent=3)
+    list_nodesSelected_out[i] = json.dumps(all_nodesSelected[i], indent=3)
     list_linksSelected_out = [dash.no_update] * len(ctx.outputs_list[1])
-    list_linksSelected_out[int(activeKey)] = json.dumps(all_linksSelected[int(activeKey)], indent=3)
+    list_linksSelected_out[i] = json.dumps(all_linksSelected[i], indent=3)
     return [
     list_nodesSelected_out,
     list_linksSelected_out
