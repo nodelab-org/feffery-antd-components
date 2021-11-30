@@ -72,7 +72,7 @@ python-versions = "*"
 name = "dash-daq"
 version = "0.5.0"
 description = "DAQ components for Dash"
-category = "main"
+category = "dev"
 optional = false
 python-versions = "*"
 
@@ -81,15 +81,16 @@ dash = ">=1.6.1"
 
 [[package]]
 name = "dash-extensions"
-version = "0.0.60"
+version = "0.0.65"
 description = "Extensions for Plotly Dash."
-category = "main"
+category = "dev"
 optional = false
 python-versions = "*"
 
 [package.dependencies]
 dash = "*"
 Flask-Caching = "*"
+jsbeautifier = "*"
 more-itertools = "*"
 
 [[package]]
@@ -124,6 +125,14 @@ optional = false
 python-versions = "*"
 
 [[package]]
+name = "editorconfig"
+version = "0.12.3"
+description = "EditorConfig File Locator and Interpreter for Python"
+category = "dev"
+optional = false
+python-versions = "*"
+
+[[package]]
 name = "flask"
 version = "2.0.1"
 description = "A simple framework for building complex web applications."
@@ -145,7 +154,7 @@ dotenv = ["python-dotenv"]
 name = "flask-caching"
 version = "1.10.1"
 description = "Adds caching support to your Flask application"
-category = "main"
+category = "dev"
 optional = false
 python-versions = ">=3.5"
 
@@ -195,6 +204,18 @@ MarkupSafe = ">=2.0"
 i18n = ["Babel (>=2.7)"]
 
 [[package]]
+name = "jsbeautifier"
+version = "1.14.0"
+description = "JavaScript unobfuscator and beautifier."
+category = "dev"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+editorconfig = ">=0.12.2"
+six = ">=1.13.0"
+
+[[package]]
 name = "markupsafe"
 version = "2.0.1"
 description = "Safely add untrusted strings to HTML/XML markup."
@@ -204,9 +225,9 @@ python-versions = ">=3.6"
 
 [[package]]
 name = "more-itertools"
-version = "8.9.0"
+version = "8.12.0"
 description = "More routines for operating on iterables, beyond itertools"
-category = "main"
+category = "dev"
 optional = false
 python-versions = ">=3.5"
 
@@ -298,7 +319,7 @@ watchdog = ["watchdog"]
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.8"
-content-hash = "bd3458dfb522e2ec53b928c5deb3ab0fe06f9f4cb15cd5d961303fe5b75ff5e9"
+content-hash = "654ff5f33af7d3910e60b8b83da2d5d772c1d842932058f3428e4d73f96d557d"
 
 [metadata.files]
 brotli = [
@@ -357,8 +378,8 @@ dash-daq = [
     {file = "dash_daq-0.5.0.tar.gz", hash = "sha256:a1d85b6799f7b885652fbc44aebdb58c41254616a8d350b943beeb42ade4256a"},
 ]
 dash-extensions = [
-    {file = "dash-extensions-0.0.60.tar.gz", hash = "sha256:cb4e642c06a3db307ecd074589876c600a73fd10fde4ea588d44b491ef0ffff7"},
-    {file = "dash_extensions-0.0.60-py3-none-any.whl", hash = "sha256:71f130651074e90ee079b7438f7c76ab8c1fb02ed6da60da35c0792d7d8ff5db"},
+    {file = "dash-extensions-0.0.65.tar.gz", hash = "sha256:5f481364dcb74e00055fde41be673182d8583decbdacbdc3dabc41b888ffda61"},
+    {file = "dash_extensions-0.0.65-py3-none-any.whl", hash = "sha256:d7c3310f8099037892fc7221201013421853366d9ab6707d5ac8d4122da2867e"},
 ]
 dash-html-components = [
     {file = "dash_html_components-1.1.4.tar.gz", hash = "sha256:dc4f423e13716d179d51a42b3c7e2a2ed02e05185c742f88214b58d59e24bbd4"},
@@ -366,6 +387,10 @@ dash-html-components = [
 dash-react-force-graph = []
 dash-table = [
     {file = "dash_table-4.12.0.tar.gz", hash = "sha256:4c99689a887bfd035278b14ecd5db70706023389e53735d5e3cccc416facdbe4"},
+]
+editorconfig = [
+    {file = "EditorConfig-0.12.3-py3-none-any.whl", hash = "sha256:6b0851425aa875b08b16789ee0eeadbd4ab59666e9ebe728e526314c4a2e52c1"},
+    {file = "EditorConfig-0.12.3.tar.gz", hash = "sha256:57f8ce78afcba15c8b18d46b5170848c88d56fd38f05c2ec60dbbfcb8996e89e"},
 ]
 flask = [
     {file = "Flask-2.0.1-py3-none-any.whl", hash = "sha256:a6209ca15eb63fc9385f38e452704113d679511d9574d09b2cf9183ae7d20dc9"},
@@ -389,6 +414,9 @@ itsdangerous = [
 jinja2 = [
     {file = "Jinja2-3.0.1-py3-none-any.whl", hash = "sha256:1f06f2da51e7b56b8f238affdd6b4e2c61e39598a378cc49345bc1bd42a978a4"},
     {file = "Jinja2-3.0.1.tar.gz", hash = "sha256:703f484b47a6af502e743c9122595cc812b0271f661722403114f71a79d0f5a4"},
+]
+jsbeautifier = [
+    {file = "jsbeautifier-1.14.0.tar.gz", hash = "sha256:84fdb008d8af89619269a6aca702288b48f837a99427a0f529aa57ecfb36ee3c"},
 ]
 markupsafe = [
     {file = "MarkupSafe-2.0.1-cp36-cp36m-macosx_10_9_x86_64.whl", hash = "sha256:f9081981fe268bd86831e5c75f7de206ef275defcb82bc70740ae6dc507aee51"},
@@ -427,8 +455,8 @@ markupsafe = [
     {file = "MarkupSafe-2.0.1.tar.gz", hash = "sha256:594c67807fb16238b30c44bdf74f36c02cdf22d1c8cda91ef8a0ed8dabf5620a"},
 ]
 more-itertools = [
-    {file = "more-itertools-8.9.0.tar.gz", hash = "sha256:8c746e0d09871661520da4f1241ba6b908dc903839733c8203b552cffaf173bd"},
-    {file = "more_itertools-8.9.0-py3-none-any.whl", hash = "sha256:70401259e46e216056367a0a6034ee3d3f95e0bf59d3aa6a4eb77837171ed996"},
+    {file = "more-itertools-8.12.0.tar.gz", hash = "sha256:7dc6ad46f05f545f900dd59e8dfb4e84a4827b97b3cfecb175ea0c7d247f6064"},
+    {file = "more_itertools-8.12.0-py3-none-any.whl", hash = "sha256:43e6dd9942dffd72661a2c4ef383ad7da1e6a3e968a927ad7a6083ab410a688b"},
 ]
 numpy = [
     {file = "numpy-1.21.2-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:52a664323273c08f3b473548bf87c8145b7513afd63e4ebba8496ecd3853df13"},
