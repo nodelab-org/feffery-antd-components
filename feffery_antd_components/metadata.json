@@ -5586,6 +5586,13 @@
           "computed": false
         }
       },
+      "icon": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": ""
+      },
       "style": {
         "type": {
           "name": "object"
@@ -5597,7 +5604,7 @@
           "computed": false
         }
       },
-      "tab": {
+      "tabTitle": {
         "type": {
           "name": "string"
         },
@@ -5657,19 +5664,34 @@
     "displayName": "AntdTabs",
     "methods": [],
     "props": {
+      "animated": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "whether to animate change of tab",
+        "defaultValue": {
+          "value": "false",
+          "computed": false
+        }
+      },
       "activeKey": {
         "type": {
           "name": "string"
         },
         "required": false,
-        "description": ""
+        "description": "",
+        "defaultValue": {
+          "value": "\"0\"",
+          "computed": false
+        }
       },
       "children": {
         "type": {
           "name": "node"
         },
         "required": false,
-        "description": "children"
+        "description": "tab children, i.e. contents"
       },
       "className": {
         "type": {
@@ -5686,6 +5708,17 @@
         "description": "",
         "defaultValue": {
           "value": "\"0\"",
+          "computed": false
+        }
+      },
+      "forceRender": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "",
+        "defaultValue": {
+          "value": "false",
           "computed": false
         }
       },
@@ -5718,33 +5751,23 @@
           "computed": false
         }
       },
+      "nTabClicks": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "number of times add button has been clicked",
+        "defaultValue": {
+          "value": "0",
+          "computed": false
+        }
+      },
       "style": {
         "type": {
           "name": "object"
         },
         "required": false,
         "description": "new tab to add on click"
-      },
-      "tabPosition": {
-        "type": {
-          "name": "string"
-        },
-        "required": false,
-        "description": ""
-      },
-      "size": {
-        "type": {
-          "name": "string"
-        },
-        "required": false,
-        "description": ""
-      },
-      "targetKey": {
-        "type": {
-          "name": "string"
-        },
-        "required": false,
-        "description": ""
       },
       "loading_state": {
         "type": {
@@ -5770,6 +5793,24 @@
         "required": false,
         "description": ""
       },
+      "size": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": "",
+        "defaultValue": {
+          "value": "\"small\"",
+          "computed": false
+        }
+      },
+      "tabPosition": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": ""
+      },
       "setProps": {
         "type": {
           "name": "func"
@@ -5777,12 +5818,12 @@
         "required": false,
         "description": "Dash-assigned callback that should be called to report property changes\nto Dash, to make them available for callbacks."
       },
-      "trigger": {
+      "targetKey": {
         "type": {
           "name": "string"
         },
         "required": false,
-        "description": "Used to make it easy in Dash application to detect whether nClicksAadd or nClicksRemove caused component to update"
+        "description": ""
       }
     }
   },
