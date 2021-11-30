@@ -17,8 +17,9 @@ export default function AntdTabPane (props) {
         // key,
         children,
         className,
+        icon,
         style,
-        tab,
+        tabTitle,
         disabled,
         // closable,
         loading_state,
@@ -29,10 +30,9 @@ export default function AntdTabPane (props) {
         <div id={id}
             children={parseChildrenToArray(children)}
             className={className}
+            icon={icon}
             style={style}
-            tab={tab}
-            // key={id}
-            // key={key}
+            tab={tabTitle}
             disabled={disabled}
             // closable={closable} 
             data-dash-is-loading={
@@ -57,12 +57,17 @@ AntdTabPane.propTypes = {
     // css
     className: PropTypes.string,
 
-    // 
+    // icon to display. Currently must be 'schema' or 'data'
+    icon: PropTypes.string, 
+
+    // inline CSS styles for pane
     style: PropTypes.object,
 
-    // 
-    tab: PropTypes.string,
+    // title of tab displayed in tab bar
+    tabTitle: PropTypes.string,
 
+    // inline  CSS styles for tab title. Useful for fixing width to avoid problems with flexbox when changint tabTitle after render
+    // tabTitleStyle: PropTypes.object,
     // 
     // key: PropTypes.string,
 
@@ -97,7 +102,7 @@ AntdTabPane.propTypes = {
 // 
 AntdTabPane.defaultProps = {
     className:"antd-tabpane",
+    disabled:false,
     style:{},
-    tab:"New Tab",
-    disabled:false
+    tabTitle:"New Tab"
 }

@@ -137,33 +137,19 @@ def get_components_matching_trigger_id_variable(
                     break
         return list_out
 
+
 # returns a tab pane
-def create_layout_tab(index):
+def create_layout_tab(index, tab_title="New Tab", icon=None):
     return fac.AntdTabPane(
         id=str(index),
+        icon=icon,
         # key=str(index), # key == id
-        className="antd-tabpane",
-        tab=f"New Tab", # tab title
+        className="antd-tab-pane",
+        tabTitle=tab_title, # tab title
         children=[
             dbc.Container(
                 children=[
-                    html.Div(
-                        id = {"type1":"div-graph-component", "index":index},
-                        children=[
-                            Graph2D(
-                                id={"type1":"graph2D", "index":index},
-                                key=index,
-                                graphData={"nodes":[], "links":[]},#graphdata_init,
-                                heightRatio=0.7,
-                                nodeId="__nodeId",
-                                nodeLabel="__nodeLabel",
-                                nodeColor="__nodeColor",
-                                nodeIcon="__nodeIcon",
-                                nodeImg="__nodeImg",
-                                nodeIcon_fontsheets={"FontAwesome":"https://kit.fontawesome.com/a6e0eeba63.js"}
-                            ),
-                        ]
-                    ),
+                    dcc.Store(id={"type1":"store-graphdata", "index":index}, storage_type = "session"),
                     dbc.Form(
                         children=[
                             dbc.FormGroup(
@@ -195,7 +181,7 @@ def create_layout_tab(index):
                                         ),
                                         dbc.Button(children="save",id={"type1":"button", "type2":"tab", "index":index}),
                                         dbc.Container(id={"type1":"output", "type2":"tab", "index":index}),
-                                        dcc.Store(id={"type1":"store-database-useicons", "index":index}, data={})
+                                        dcc.Store(id={"type1":"store-database-useicons", "index":index}, data={}, storage_type="session")
                                     ])
                                 ]
                             )
@@ -225,13 +211,14 @@ layout = dbc.Container(
         dbc.Row([
             dbc.Col([
                 fac.AntdTabs(
-                    id='antd-tabs-main',
+                    id="body-tabs",
                     children=[
-                        create_layout_tab(index=0),
+                        create_layout_tab(index=0, icon="schema"),
                         # create_layout_tab(1)
                         ],
                     className='antd-tabs',
-                    style={'height': '800px'},
+                    forceRender=False,
+                    style={'height': '200px'},
                     # type='editable-card',
                     defaultActiveKey='0',
                     tabPosition='top',
@@ -240,9 +227,37 @@ layout = dbc.Container(
             ])
         ]),
         dbc.Row(
+            dbc.Col(
+                dbc.Container(
+                    id = "container-graph-component",
+                    children=[
+                        Graph2D(
+                            id="graph2D", 
+                            key="graph2D",
+                            # graphData={"nodes":[], "links":[]},#graphdata_init,
+                            graphData=graphdata_init,
+                            heightRatio=0.6,
+                            nodeId="__nodeId",
+                            nodeLabel="__nodeLabel",
+                            nodeColor="__nodeColor",
+                            nodeIcon="__nodeIcon",
+                            nodeImg="__nodeImg",
+                            nodeIcon_fontsheets={"FontAwesome":"https://kit.fontawesome.com/a6e0eeba63.js"}
+                        ),
+                    ]
+                ),
+            )
+        ),
+        dbc.Row(
             children=[
                 dbc.Col(
                     children=[
+                        html.Div(id="output-nodesSelected"),
+                        dcc.Store(
+                            id="store-graph-props",
+                            data={"0":{}},
+                            storage_type="memory"
+                        ),
                         dcc.Store(
                             id="store-saved-active-key",
                             data="0", # doesn't work, is initialized as None!
@@ -256,6 +271,8 @@ layout = dbc.Container(
 )
 
 # register callbacks
+
+
 @app.callback(
     [
         Output("keyboard-new-tab", "data"),
@@ -294,112 +311,272 @@ def common_store_route_keyboard_event(
     return list_out    
 
 
+
 @app.callback(
     [
-        Output("antd-tabs-main","children"),
-        Output("antd-tabs-main","activeKey"),
-        Output("store-index-counter", "data")
+        Output("body-tabs","children"),
+        Output("body-tabs","activeKey"),
+        Output("store-saved-active-key","data"),
+        Output("store-index-counter", "data"),
+        Output("graph2D", "graphData"),
+        Output("graph2D", "nodesSelected"),
+        Output("graph2D", "linksSelected"),
+        Output("graph2D", "nodeIdsInvisibleUser"),
+        Output("graph2D", "linkIdsInvisibleUser"),
+        Output("graph2D", "nodeIdsInvisibleAuto"),
+        Output("graph2D", "linkIdsInvisibleAuto"),
+        Output("graph2D", "centerAtZoom"),
+        Output("store-graph-props","data"),
     ],
     [
-        Input("antd-tabs-main","nClicksAdd"),
-        Input("antd-tabs-main","nClicksRemove"),
+        Input("body-tabs","nClicksAdd"),
+        Input("body-tabs","nClicksRemove"),
+
         Input("keyboard-new-tab", "data"),
         Input("keyboard-close-tab","data"),
         Input("keyboard-move-to-right-tab","data"),
         Input("keyboard-move-to-left-tab","data"),
+
+        Input("body-tabs","activeKey"),
+
+        Input({"type1":"button-add-graphdata", "index":ALL}, "n_clicks")
     ],
     [
-        State("antd-tabs-main","trigger"),
-        State("antd-tabs-main","children"),
-        State("antd-tabs-main","activeKey"),
-        State("antd-tabs-main","targetKey"),
-        State("store-index-counter", "data")
+        State("store-saved-active-key","data"),
+        State("body-tabs","children"),
+        State("body-tabs","targetKey"),
+        State("store-index-counter", "data"),
+        State("graph2D", "graphData"),
+        State("graph2D", "nodesSelected"),
+        State("graph2D", "linksSelected"),
+        State("graph2D", "nodeIdsInvisibleUser"),
+        State("graph2D", "linkIdsInvisibleUser"),
+        State("graph2D", "nodeIdsInvisibleAuto"),
+        State("graph2D", "linkIdsInvisibleAuto"),
+        State("graph2D", "currentZoomPan"),
+        State("store-graph-props","data"),
     ],
 )
 def add_remove_change_tab(
     n_clicks_add, 
     n_clicks_remove, 
+
     keyboard_new_tab,
     keyboard_close_tab,
     keyboard_move_right,
     keyboard_move_left,
-    on_edit_trigger, 
-    children, 
+
     activeKey,
+
+    all_n_clicks_add_graphdata,
+
+    previousActiveKey,
+    children, 
     targetKey,
-    last_index
+    last_index,
+    graphdata,
+    nodesSelected,
+    linksSelected,
+    nodeIdsInvisibleUser,
+    linkIdsInvisibleUser,
+    nodeIdsInvisibleAuto,
+    linkIdsInvisibleAuto,
+    currentZoomPan, 
+    tab_graph2Dprops_store
     ):
     ctx = dash.callback_context
     if not ctx.triggered:
         raise PreventUpdate
     else:
         trigger_id = ctx.triggered[0]["prop_id"].split(".")[0]
-    if n_clicks_add == None:
-        n_clicks_add = 0
-    if n_clicks_remove == None:
-        n_clicks_remove = 0
-    if not n_clicks_add and not n_clicks_remove and not keyboard_new_tab and not keyboard_close_tab and not keyboard_move_right and not keyboard_move_left:
-        raise PreventUpdate
-    
-    print("")
-    print(children[0])
 
-    if "keyboard-move-to" in trigger_id:
-        # note that mouse tab change is handled by Tabs component itself
-        
+    if not any([
+        n_clicks_add, 
+        n_clicks_remove,
+        keyboard_new_tab, 
+        keyboard_close_tab,
+        keyboard_move_right,
+        keyboard_move_left,
+        any(all_n_clicks_add_graphdata)
+        ]):
+        raise PreventUpdate
+    centerAtZoom = dash.no_update
+    if activeKey == None:
+        activeKey = 0
+
+    # Dash initiates components with null props - even when they have a default value.
+    if nodesSelected == None:
+        nodesSelected = []
+    if linksSelected == None:
+        linksSelected = []
+    if nodeIdsInvisibleUser == None:
+        nodeIdsInvisibleUser = []
+    if linkIdsInvisibleUser == None:
+        linkIdsInvisibleUser = []
+    if nodeIdsInvisibleAuto == None:
+        nodeIdsInvisibleAuto = []
+    if linkIdsInvisibleAuto == None:
+        linkIdsInvisibleAuto = []
+
+    if "keyboard-move-to" in trigger_id or ("body-tabs" in trigger_id and ctx.triggered[0]["prop_id"].split(".")[1] == "activeKey"):
+        # note that while tab change by keyboard requires changing children manually,
+        # tab change by mouse click is handled by Tabs component itself, so we have to react to change of key
+        print("change tab")
         last_index = dash.no_update
         if trigger_id == "keyboard-move-to-right-tab":
             for i, child in enumerate(children):
                 if child["props"]["id"] == activeKey:
                     if i < len(children) - 1:
-                        activeKey = children[i+1]["props"]["id"]
+                        newActiveKey = str(children[i+1]["props"]["id"])
                     else:
-                        activeKey = children[0]["props"]["id"]
+                        newActiveKey = str(children[0]["props"]["id"])
                     break
         elif trigger_id == "keyboard-move-to-left-tab":
             for i, child in enumerate(children):
                 if child["props"]["id"] == activeKey:
                     if i > 0:
-                        activeKey = children[i-1]["props"]["id"]
+                        newActiveKey = str(children[i-1]["props"]["id"])
                     else:
-                        activeKey = children[-1]["props"]["id"]
+                        newActiveKey = str(children[-1]["props"]["id"])
                     break
-        children = dash.no_update
-    else:
-        add = True if (trigger_id == "antd-tabs-main" and on_edit_trigger == "add") or trigger_id == "keyboard-new-tab" else False
-        if add:
-            # add tab
-            last_index += 1
-            activeKey = str(last_index)
-            children.append(create_layout_tab(last_index))
         else: 
-            # delete targetKey tab
-            if len(children)>1:
-                if trigger_id == "keyboard-close-tab":
-                    targetKey = activeKey
-                for i, child in enumerate(children):
-                    if child["props"]["id"] == targetKey:
-                        activeKey = children[i+1]["props"]["id"] if i<len(children)-1 else children[-2]["props"]["id"]
-                        children.pop(i)
-                        break
-                    # for i, child in enumerate(children):
-                    #     if str(child["props"]["id"]) == str(targetKey):
-                    #         activeKey = i - 1 
-                    #         break
-                # else:
-                #     activeKey = "0"
-                # print("")
-                # for i in range(int(activeKey)+1, len(children)):
-                #     children[i]["props"]['id'] = str(i-1)
+            newActiveKey = str(activeKey)
+
+        children = dash.no_update
+
+        # stash current Graph2D props for current tab to store
+        tab_graph2Dprops_store[previousActiveKey]["graphData"] = graphdata
+        for link in tab_graph2Dprops_store[previousActiveKey]["graphData"]["links"]:
+            if type(link["source"]) is dict:
+                link["source"] = link["source"]["__nodeId"]
+                link["target"] = link["target"]["__nodeId"]
+            del link["index"]
+        tab_graph2Dprops_store[previousActiveKey]["nodesSelected"] = nodesSelected
+        for link in linksSelected:
+            if type(link["source"]) is dict:
+                link["source"] = link["source"]["__nodeId"]
+                link["target"] = link["target"]["__nodeId"]
+        print("")
+        print(f"stashing linksSelected: {linksSelected}")
+        tab_graph2Dprops_store[previousActiveKey]["linksSelected"] = linksSelected
+        tab_graph2Dprops_store[previousActiveKey]["nodeIdsInvisibleUser"] = nodeIdsInvisibleUser
+        tab_graph2Dprops_store[previousActiveKey]["linkIdsInvisibleUser"] = linkIdsInvisibleUser
+        tab_graph2Dprops_store[previousActiveKey]["nodeIdsInvisibleAuto"] = nodeIdsInvisibleAuto
+        tab_graph2Dprops_store[previousActiveKey]["linkIdsInvisibleAuto"] = linkIdsInvisibleAuto
+        tab_graph2Dprops_store[previousActiveKey]["centerAtZoom"] = currentZoomPan
+        
+        # retrieve stored Graph2D props for new tab
+        graphdata = tab_graph2Dprops_store[newActiveKey]["graphData"]
+        nodesSelected = tab_graph2Dprops_store[newActiveKey]["nodesSelected"]
+        linksSelected = tab_graph2Dprops_store[newActiveKey]["linksSelected"]
+        print("")
+        print(f"retrieved linksSelected: {linksSelected}")
+        nodeIdsInvisibleUser = tab_graph2Dprops_store[newActiveKey]["nodeIdsInvisibleUser"]
+        linkIdsInvisibleUser = tab_graph2Dprops_store[newActiveKey]["linkIdsInvisibleUser"]
+        nodeIdsInvisibleAuto = tab_graph2Dprops_store[newActiveKey]["nodeIdsInvisibleAuto"]
+        linkIdsInvisibleAuto = tab_graph2Dprops_store[newActiveKey]["linkIdsInvisibleAuto"]
+        centerAtZoom = tab_graph2Dprops_store[newActiveKey]["centerAtZoom"]
+
+    elif "button-add-graphdata" in trigger_id:
+        print("add graphdaa")
+        children = newActiveKey = last_index = dash.no_update
+        graphdata = copy.deepcopy(graphdata_init)
+        nodesSelected = []
+        linksSelected = [] 
+        nodeIdsInvisibleUser = [] 
+        linkIdsInvisibleUser = [] 
+        nodeIdsInvisibleAuto = []
+        linkIdsInvisibleAuto = []
+        centerAtZoom = dash.no_update
+        tab_graph2Dprops_store = dash.no_update
+
+    elif (trigger_id == "body-tabs" and ctx.triggered[0]["prop_id"].split(".")[1] == "nClicksAdd") or trigger_id == "keyboard-new-tab":
+        print("add tab")
+        # add tab
+        last_index += 1
+        newActiveKey = str(last_index)
+        children.append(create_layout_tab(last_index, icon="data"))
+        # stash current Graph2D props for current tab to store
+        tab_graph2Dprops_store[previousActiveKey]["graphData"] = graphdata
+        for link in tab_graph2Dprops_store[previousActiveKey]["graphData"]["links"]:
+            if type(link["source"]) is dict:
+                link["source"] = link["source"]["__nodeId"]
+                link["target"] = link["target"]["__nodeId"]
+            # del link["index"]
+        tab_graph2Dprops_store[previousActiveKey]["nodesSelected"] = nodesSelected
+        for link in linksSelected:
+            if type(link["source"]) is dict:
+                link["source"] = link["source"]["__nodeId"]
+                link["target"] = link["target"]["__nodeId"]
+        print("")
+        print(f"stashing linksSelected: {linksSelected}")
+        tab_graph2Dprops_store[previousActiveKey]["linksSelected"] = linksSelected
+        tab_graph2Dprops_store[previousActiveKey]["nodeIdsInvisibleUser"] = nodeIdsInvisibleUser
+        tab_graph2Dprops_store[previousActiveKey]["linkIdsInvisibleUser"] = linkIdsInvisibleUser
+        tab_graph2Dprops_store[previousActiveKey]["nodeIdsInvisibleAuto"] = nodeIdsInvisibleAuto
+        tab_graph2Dprops_store[previousActiveKey]["linkIdsInvisibleAuto"] = linkIdsInvisibleAuto
+        tab_graph2Dprops_store[previousActiveKey]["centerAtZoom"] = currentZoomPan
+        
+        # initialise new
+        graphdata = copy.deepcopy(graphdata_init)#{"nodes":[], "links":[]}
+        nodesSelected = [] 
+        linksSelected = [] 
+        nodeIdsInvisibleUser = []
+        linkIdsInvisibleUser = [] 
+        nodeIdsInvisibleAuto = []
+        linkIdsInvisibleAuto = [] 
+        centerAtZoom = dash.no_update
+        # graph2D store key
+        tab_graph2Dprops_store[newActiveKey] = {}
+        
+    elif ((trigger_id == "body-tabs" and ctx.triggered[0]["prop_id"].split(".")[1] == "nClicksRemove") or trigger_id == "keyboard-close-tab") and len(children)>1:
+        print("close tab")
+        # delete targetKey tab or current tab if keyboard)
+        if trigger_id == "keyboard-close-tab":
+            targetKey = activeKey
+        for i, child in enumerate(children):
+            if child["props"]["id"] == targetKey:
+                newActiveKey = children[i+1]["props"]["id"] if i<len(children)-1 else children[-2]["props"]["id"]
+                children.pop(i)
+                break
+        # clean up store from deleted tab
+        del tab_graph2Dprops_store[str(targetKey)]
+        # retrieve data for next tab
+        graphdata = tab_graph2Dprops_store[newActiveKey]["graphData"]
+        nodesSelected = tab_graph2Dprops_store[newActiveKey]["nodesSelected"]
+        linksSelected = tab_graph2Dprops_store[newActiveKey]["linksSelected"]
+        print("")
+        print(f"retrieved linksSelected: {linksSelected}")
+        nodeIdsInvisibleUser = tab_graph2Dprops_store[newActiveKey]["nodeIdsInvisibleUser"]
+        linkIdsInvisibleUser = tab_graph2Dprops_store[newActiveKey]["linkIdsInvisibleUser"]
+        nodeIdsInvisibleAuto = tab_graph2Dprops_store[newActiveKey]["nodeIdsInvisibleAuto"]
+        linkIdsInvisibleAuto = tab_graph2Dprops_store[newActiveKey]["linkIdsInvisibleAuto"]
+        centerAtZoom = tab_graph2Dprops_store[newActiveKey]["centerAtZoom"]
     print("")
-    print(f"add_remove_change_tab, trigger_id: {trigger_id}")  
-    return [children, activeKey, last_index]
+    print(f"add_remove_change_tab, trigger_id:   {trigger_id}")  
+    # print(f"centerAtZoom: {centerAtZoom}")
+    # print(f"tab_graph2Dprops_store: {tab_graph2Dprops_store}")
+    return [
+        children, 
+        newActiveKey,
+        newActiveKey, 
+        last_index, 
+        graphdata,
+        nodesSelected,
+        linksSelected,
+        nodeIdsInvisibleUser,
+        linkIdsInvisibleUser,
+        nodeIdsInvisibleAuto,
+        linkIdsInvisibleAuto,
+        centerAtZoom, 
+        tab_graph2Dprops_store
+        ]
 
 
 # @app.callback(
 #     Output({"type1":"indicator-active-tab","index":ALL}, "data"),
 #     [
-#         Input("antd-tabs-main","activeKey")
+#         Input("body-tabs","activeKey")
 #     ],
 #     [
 #         State({"type1":"indicator-active-tab","index":ALL}, "data"),
@@ -431,7 +608,7 @@ def add_remove_change_tab(
 #     Output({"type1":"graph2D", "index":MATCH}, "graphData"),
 #     [
 #         Input({"type1":"button-add-graphdata", "index":MATCH}, "n_clicks"),
-#         Input("antd-tabs-main","activeKey"),
+#         Input("body-tabs","activeKey"),
 #     ],
 #     [
 #         # State({"type1":"graph2D", "index":MATCH}, "graphData"),
@@ -475,7 +652,7 @@ def add_remove_change_tab(
 #         Output("store-saved-active-key","data")
 #     ],
 #     [
-#         Input("antd-tabs-main","activeKey"),
+#         Input("body-tabs","activeKey"),
 #     ],
 #     [
 #         State("store-saved-active-key","data"),
@@ -489,7 +666,7 @@ def add_remove_change_tab(
 #     currentActiveKey,
 #     list_nodeIdsVisibleFilter,
 #     list_linkIdsVisibleFilter,
-#     dict_graph_props_stored,
+#     tab_graph2Dprops_store,
 #     ):
 #     ctx = dash.callback_context
 #     if not ctx.triggered:
@@ -498,23 +675,23 @@ def add_remove_change_tab(
 #     list_nodeIdsVisibleFilter_new = [[None] for i in range(len(list_nodeIdsVisibleFilter))]
 #     list_linkIdsVisibleFilter_new = [[None] for i in range(len(list_linkIdsVisibleFilter))]
 #     # retrieve newActiveKey nodeIdsVisibleFilter and linkIdsVisibleFilter
-#     if not newActiveKey in dict_graph_props_stored:
+#     if not newActiveKey in tab_graph2Dprops_store:
 #         # initialize if new
-#         dict_graph_props_stored[newActiveKey] = {}
-#         dict_graph_props_stored[newActiveKey]["nodeIdsVisibleFilter"] = []
-#         dict_graph_props_stored[newActiveKey]["linkIdsVisibleFilter"] = []
-#     list_nodeIdsVisibleFilter_new[int(newActiveKey)] = dict_graph_props_stored[newActiveKey]["nodeIdsVisibleFilter"] 
-#     list_linkIdsVisibleFilter_new[int(newActiveKey)] = dict_graph_props_stored[newActiveKey]["linkIdsVisibleFilter"] 
+#         tab_graph2Dprops_store[newActiveKey] = {}
+#         tab_graph2Dprops_store[newActiveKey]["nodeIdsVisibleFilter"] = []
+#         tab_graph2Dprops_store[newActiveKey]["linkIdsVisibleFilter"] = []
+#     list_nodeIdsVisibleFilter_new[int(newActiveKey)] = tab_graph2Dprops_store[newActiveKey]["nodeIdsVisibleFilter"] 
+#     list_linkIdsVisibleFilter_new[int(newActiveKey)] = tab_graph2Dprops_store[newActiveKey]["linkIdsVisibleFilter"] 
 #     # stash currentActiveKey nodeIdsVisibleFilter and linkIdsVisibleFilter
-#     if not currentActiveKey in dict_graph_props_stored:
-#         dict_graph_props_stored[currentActiveKey] = {}
-#     dict_graph_props_stored[currentActiveKey]["nodeIdsVisibleFilter"]  = list_nodeIdsVisibleFilter[int(currentActiveKey)] 
-#     dict_graph_props_stored[currentActiveKey]["linkIdsVisibleFilter"]  = list_linkIdsVisibleFilter[int(currentActiveKey)] 
+#     if not currentActiveKey in tab_graph2Dprops_store:
+#         tab_graph2Dprops_store[currentActiveKey] = {}
+#     tab_graph2Dprops_store[currentActiveKey]["nodeIdsVisibleFilter"]  = list_nodeIdsVisibleFilter[int(currentActiveKey)] 
+#     tab_graph2Dprops_store[currentActiveKey]["linkIdsVisibleFilter"]  = list_linkIdsVisibleFilter[int(currentActiveKey)] 
     
 #     return [
 #         list_nodeIdsVisibleFilter_new,
 #         list_linkIdsVisibleFilter_new,
-#         dict_graph_props_stored,
+#         tab_graph2Dprops_store,
 #         newActiveKey
 #     ]
 
@@ -522,31 +699,27 @@ def add_remove_change_tab(
 # @app.callback(
 #     [
 #         Output("graph2D", "graphData"),
-#         Output("graph2D", "zoom"),
-#         Output("graph2D", "centerAt"),
+#         Output("graph2D", "centerAtZoom"),
 #         Output("store-graph-props","data"),
-#         # Output("store-saved-active-key","data")
 #     ],
 #     [
-#         # Input("antd-tabs-main","activeKey"),
-#         Input("button-add-graphdata", "n_clicks"),
-#         Input("graph2D", "centreCoordinates")
+#         Input("body-tabs","activeKey"),
+#         Input({"type1":"button-add-graphdata", "index":ALL}, "n_clicks")
 #     ],
 #     [
 #         State("graph2D", "graphData"),
 #         State("graph2D", "currentZoomPan"),
 #         State("store-saved-active-key","data"),
 #         State("store-graph-props","data"),
-#     ]
+#     ], prevent_initial_call=True
 # )
 # def update_active_tab_graphdata(
 #     newActiveKey, 
-#     n_clicks_add_graphdata,
-#     centreCoordinates,
+#     all_n_clicks_add_graphdata,
 #     graphdata,
 #     currentZoomPan, 
 #     currentActiveKey,
-#     dict_graph_props_stored,
+#     tab_graph2Dprops_store,
 #     ):
 #     '''@usage when the active tab changes, 
 #     1. save current props to store under the last known active key.
@@ -562,19 +735,19 @@ def add_remove_change_tab(
 #     # scenarios:
 
 #     # 1. component was initiated with a single new tab (currentActiveKey is empty)
-#     #    -> initialise dict_graph_props_stored
-#     #    -> save centreCoordinates to dict_graph_props_stored 
+#     #    -> initialise tab_graph2Dprops_store
+#     #    -> save centreCoordinates to tab_graph2Dprops_store 
 #     #    -> save newActiveKey to store-saved-active-key
-#     # 2. user added a new tab and switched to it (newActiveKey in in dict_graph_props_stored)
-#     #    -> save current props to dict_graph_props_stored under currentActiveKey
+#     # 2. user added a new tab and switched to it (newActiveKey in in tab_graph2Dprops_store)
+#     #    -> save current props to tab_graph2Dprops_store under currentActiveKey
 #     #    -> pan and zoom to default
 #     # 3. User clicked button to add graphData
 #     #    -> add graphdata
 #     # 4. centreCoordinates changed
-#     #    -> add new centreCoordinates to dict_graph_props_stored
+#     #    -> add new centreCoordinates to tab_graph2Dprops_store
 #     # 3. user switched to a previously seen tab 
-#     #    -> save current props to dict_graph_props_stored 
-#     #    -> retrieve props from dict_graph_props_stored
+#     #    -> save current props to tab_graph2Dprops_store 
+#     #    -> retrieve props from tab_graph2Dprops_store
 #     #
 
 
@@ -586,54 +759,50 @@ def add_remove_change_tab(
     
 #     # optimizing
 #     # - use memoizing to avoid overwriting existing saved graphdata if it's the same
-#     # - consider updating dict_graph_props_stored when graphData or other props change, rather than when activeKey changes
+#     # - consider updating tab_graph2Dprops_store when graphData or other props change, rather than when activeKey changes
 #     # - consider client-side callback
 #     # - use destructuring to save and get props en masse
 
 #     # save graphData under current key
-#     if not dict_graph_props_stored:
-#         dict_graph_props_stored = {}
+#     if not tab_graph2Dprops_store:
+#         tab_graph2Dprops_store = {}
 #     if trigger_id == "button-add-graphdata":
 #         graphdata = graphdata_init
-#         zoom = [currentZoomPan["k"],10] if currentZoomPan["k"] else 1.5
-#         centerAt = [0,0,0]
-#         dict_graph_props_stored["centreCoordinates"] = centreCoordinates
-#     elif trigger_id == "graph2D":
-#         # activated by centreCoordinates
-#         zoom = [currentZoomPan["k"],10] if currentZoomPan["k"] else 1.5
-#         centerAt = [0,0,0]
-#         dict_graph_props_stored["centreCoordinates"] = centreCoordinates
-#     elif trigger_id == "antd-tabs-main":
-#         print("")
-#         print(f"currentZoomPan: {currentZoomPan}")
+#         centerAtZoom = dash.no_update
+#         tab_graph2Dprops_store = dash.no_update
+#     elif trigger_id == "body-tabs":
 #         if not currentActiveKey: 
 #             currentActiveKey = "0"
+#         if not newActiveKey: 
+#             newActiveKey = "0"
+#         if newActiveKey == currentActiveKey:
+#             raise PreventUpdate
 #         # save current tab graphdata to store
-#         if not currentActiveKey in dict_graph_props_stored:
-#             dict_graph_props_stored[currentActiveKey] = {}
-#         dict_graph_props_stored[currentActiveKey]["graphdata"] = rm_graphdata_render_data(graphdata, graph_lib="2D", coordinates_rm=[])
-#         dict_graph_props_stored[currentActiveKey]["currentZoomPan"] = currentZoomPan if currentZoomPan else {"k":1.5,"x":0,"y":0}
+#         if not currentActiveKey in tab_graph2Dprops_store:
+#             tab_graph2Dprops_store[currentActiveKey] = {}
+#         tab_graph2Dprops_store[currentActiveKey]["graphdata"] = rm_graphdata_render_data(graphdata, graph_lib="2D", coordinates_rm=[])
+#         tab_graph2Dprops_store[currentActiveKey]["currentZoomPan"] = currentZoomPan if currentZoomPan else {"k":1.5,"x":0,"y":0}
 
 #         # fix node coordinates for re-creating layout later
-#         for i in range(len(dict_graph_props_stored[currentActiveKey]["graphdata"]["nodes"])):
-#             dict_graph_props_stored[currentActiveKey]["graphdata"]["nodes"][i]["fx"] = dict_graph_props_stored[currentActiveKey]["graphdata"]["nodes"][i]["x"]
-#             dict_graph_props_stored[currentActiveKey]["graphdata"]["nodes"][i]["fy"] = dict_graph_props_stored[currentActiveKey]["graphdata"]["nodes"][i]["y"]
+#         for i in range(len(tab_graph2Dprops_store[currentActiveKey]["graphdata"]["nodes"])):
+#             tab_graph2Dprops_store[currentActiveKey]["graphdata"]["nodes"][i]["fx"] = tab_graph2Dprops_store[currentActiveKey]["graphdata"]["nodes"][i]["x"]
+#             tab_graph2Dprops_store[currentActiveKey]["graphdata"]["nodes"][i]["fy"] = tab_graph2Dprops_store[currentActiveKey]["graphdata"]["nodes"][i]["y"]
 
 #         # new tab contents
-#         if newActiveKey in dict_graph_props_stored:
+#         if newActiveKey in tab_graph2Dprops_store:
 #             # retrieve graph props from store for new active key
-#             graphdata = dict_graph_props_stored[newActiveKey]["graphdata"]
-#             zoom = [dict_graph_props_stored[newActiveKey]["currentZoomPan"]["k"],10]
+#             graphdata = tab_graph2Dprops_store[newActiveKey]["graphdata"]
+#             zoom = [tab_graph2Dprops_store[newActiveKey]["currentZoomPan"]["k"],10]
 #             centerAt = [
-#                 dict_graph_props_stored["centreCoordinates"]["x"]+dict_graph_props_stored[newActiveKey]["currentZoomPan"]["x"]-dict_graph_props_stored[currentActiveKey]["currentZoomPan"]["x"], 
-#                 dict_graph_props_stored["centreCoordinates"]["y"]+dict_graph_props_stored[newActiveKey]["currentZoomPan"]["y"]-dict_graph_props_stored[currentActiveKey]["currentZoomPan"]["y"], 
+#                 tab_graph2Dprops_store["centreCoordinates"]["x"]+tab_graph2Dprops_store[newActiveKey]["currentZoomPan"]["x"]-tab_graph2Dprops_store[currentActiveKey]["currentZoomPan"]["x"], 
+#                 tab_graph2Dprops_store["centreCoordinates"]["y"]+tab_graph2Dprops_store[newActiveKey]["currentZoomPan"]["y"]-tab_graph2Dprops_store[currentActiveKey]["currentZoomPan"]["y"], 
 #                 50
-#                 ]# if dict_graph_props_stored[currentActiveKey]["currentZoomPan"]["x"] and dict_graph_props_stored[currentActiveKey]["currentZoomPan"]["y"] else [0,0,0]
+#                 ]# if tab_graph2Dprops_store[currentActiveKey]["currentZoomPan"]["x"] and tab_graph2Dprops_store[currentActiveKey]["currentZoomPan"]["y"] else [0,0,0]
 #         else:
 #             # initialize empty new tab
 #             graphdata = {"nodes":[], "links":[]}
 #             zoom = [currentZoomPan["k"],10] if currentZoomPan["k"] else 1.5
-#             centerAt = [dict_graph_props_stored["centreCoordinates"]["x"], dict_graph_props_stored["centreCoordinates"]["y"], 50]
+#             centerAt = [tab_graph2Dprops_store["centreCoordinates"]["x"], tab_graph2Dprops_store["centreCoordinates"]["y"], 50]
 
 #     # changed tabs. retrieve graphData from store, 
 #     print("")
@@ -645,7 +814,7 @@ def add_remove_change_tab(
 #         graphdata, 
 #         zoom, 
 #         centerAt, 
-#         dict_graph_props_stored, 
+#         tab_graph2Dprops_store, 
 #         newActiveKey
 #         ]
 
@@ -687,100 +856,120 @@ def add_remove_change_tab(
 #         ]
 
 
-@app.callback(
-    [
-        Output({"type1":"graph2D", "index":MATCH}, "graphData"),
-        Output({"type1":"graph2D", "index":MATCH}, "pauseAnimation")
-    ],
-    [
-        Input({"type1":"button-add-graphdata", "index":MATCH}, "n_clicks"),
-        Input("antd-tabs-main","activeKey"),
-        # Input({"type1":"indicator-active-tab","index":MATCH}, "data"),
-    ],
-    [
-        State({"type1":"graph2D", "index":MATCH}, "graphData"),
-        State({"type1":"button-add-graphdata", "index":ALL}, "n_clicks"),
-        State("store-saved-active-key","data"),
-        State("antd-tabs-main","children")
-    ], prevent_initial_call=True
-)
-def update_tab_graphdata(
-    n_clicks_add_graphdata,
-    newActiveKey,
-    graphdata,
-    all_n_clicks_add_graphdata,
-    currentActiveKey,
-    children
-    ):
-    '''@usage 
-    if user presses button to initialize graphdata (mocking a query), simply update graphdata.
-    '''
-    ctx = dash.callback_context
-    if not ctx.triggered:
-        raise PreventUpdate
-    else:
-        trigger_id = ctx.triggered[0]["prop_id"].split(".")[0]
-    if newActiveKey  == None:
-        newActiveKey = children[0]["props"]["id"]
+# @app.callback(
+#     [
+#         Output({"type1":"graph2D", "index":MATCH}, "graphData"),
+#         Output({"type1":"store-graphdata", "index":MATCH}, "data"),
+#         Output({"type1":"graph2D", "index":MATCH}, "pauseAnimation"),
+#     ],
+#     [
+#         Input({"type1":"button-add-graphdata", "index":MATCH}, "n_clicks"),
+#         Input("body-tabs","activeKey"),
+#         # Input({"type1":"indicator-active-tab","index":MATCH}, "data"),
+#     ],
+#     [
+#         State({"type1":"graph2D", "index":MATCH}, "graphData"),
+#         State({"type1":"button-add-graphdata", "index":ALL}, "n_clicks"),
+#         State({"type1":"store-graphdata", "index":MATCH}, "data"),
+#         State("store-saved-active-key","data"),
+#         State("body-tabs","children")
+#     ], prevent_initial_call=True
+# )
+# def update_tab_graphdata(
+#     n_clicks_add_graphdata,
+#     newActiveKey,
+#     graphdata,
+#     all_n_clicks_add_graphdata,
+#     graphdata_store,
+#     currentActiveKey,
+#     children
+#     ):
+#     '''@usage 
+#     if user presses button to initialize graphdata (mocking a query), simply update graphdata.
+#     '''
+#     ctx = dash.callback_context
+#     if not ctx.triggered:
+#         raise PreventUpdate
+#     else:
+#         trigger_id = ctx.triggered[0]["prop_id"].split(".")[0]
+#     if newActiveKey  == None:
+#         newActiveKey = children[0]["props"]["id"]
 
-    if "button-add-graphdata" in trigger_id:
-        # case 1: graphdata was added
-        graphdata = copy.deepcopy(graphdata_init)
-        # nodeIdsInvisibleUser = linkIdsInvisibleUser = []
-        pauseAnimation = dash.no_update
-    else:
-        print("")
-        print(f"newActiveKey: {newActiveKey}")
-        for i, child in enumerate(children):
-            if children[i]["props"]["id"] == newActiveKey:
-                break
-        # user added or deleted a tab, or switched active tab, 
-        if dash.callback_context.states_list[0]["id"]["index"] == ctx.states_list[1][i]["id"]["index"]:
-            # if the current MATCH is the new active tab
-            if graphdata and graphdata["links"]:
-                graphdata["links"] = reset_link_source_target(graphdata["links"])
-            pauseAnimation = False
-        else:
-            pauseAnimation = True
-            graphdata = dash.no_update
-    print("")
-    print(f"update_tab_graphdata, trigger_id:{trigger_id}")
-    print(f'matching key: {dash.callback_context.states_list[0]["id"]["index"]}')
-    return [
-        graphdata, 
-        pauseAnimation
-        ]
+#     if "button-add-graphdata" in trigger_id:
+#         # case 1: graphdata was added
+#         graphdata = copy.deepcopy(graphdata_init)
+#         for node in graphdata["nodes"]:
+#             node["__fixed"] = False
+#         # nodeIdsInvisibleUser = linkIdsInvisibleUser = []
+#         pauseAnimation = dash.no_update
+#     else:
+#         # user added or deleted a tab, or switched active tab, 
+#         for i, child in enumerate(children):
+#             if children[i]["props"]["id"] == newActiveKey:
+#                 break
+#         if str(dash.callback_context.states_list[0]["id"]["index"]) == newActiveKey:# ctx.states_list[1][i]["id"]["index"]:
+#             # if the current MATCH is the new active tab
+#             print("")
+#             print("moved to tab!")
+#             graphdata = copy.deepcopy(graphdata_store)
+#             graphdata_store = dash.no_update
+#             pauseAnimation = False
+#         elif str(dash.callback_context.states_list[0]["id"]["index"]) == currentActiveKey:
+#             # leaving tab
+#             print("")
+#             print("left the tab!")
+#             if graphdata and graphdata["links"]:
+#                 graphdata["links"] = reset_link_source_target(graphdata["links"])
+#             # for node in graphdata["nodes"]:
+#             #     del node["vx"]
+#             #     del node["vy"]
+#             #     del node["index"]
+#             # for link in graphdata["links"]:
+#             #     del link["index"]
+#             #     del link["__controlPoints"]
+#             graphdata_store = copy.deepcopy(graphdata)
+#             graphdata = {"nodes":[], "links":[]}
+#             pauseAnimation = True
+#         else:
+#             raise PreventUpdate
+#     print(f"update_tab_graphdata, trigger_id:{trigger_id}")
+#     print(f'matching key: {dash.callback_context.states_list[0]["id"]["index"]}')
+#     return [
+#         graphdata, 
+#         graphdata_store,
+#         pauseAnimation
+#         ]
 
 
 
-@app.callback(
-    Output("store-saved-active-key","data"),
-    [
-        Input({"type1":"graph2D", "index":ALL}, "pauseAnimation"),
-    ],
-    [
-        State("antd-tabs-main","activeKey"),
-        State("antd-tabs-main","children")
-    ]
-)
-def update_store_saved_active_key(
-    list_pauseAnimation, 
-    newActiveKey,
-    children
-    ):
-    '''@usage pauseAnimation is always activated by update_tab_graphdata
-    '''    
-    ctx = dash.callback_context
-    if not ctx.triggered:
-        raise PreventUpdate
-    # print("ctx.triggered")
-    # print(ctx.triggered)
-    print("")
-    print("update_store_saved_active_key")
-    # print(f"newActiveKey: {newActiveKey}")
-    if newActiveKey is None:
-        newActiveKey = children[0]["props"]["id"]
-    return newActiveKey
+# @app.callback(
+#     Output("store-saved-active-key","data"),
+#     [
+#         Input({"type1":"graph2D", "index":ALL}, "pauseAnimation"),
+#     ],
+#     [
+#         State("body-tabs","activeKey"),
+#         State("body-tabs","children")
+#     ]
+# )
+# def update_store_saved_active_key(
+#     list_pauseAnimation, 
+#     newActiveKey,
+#     children
+#     ):
+#     '''@usage pauseAnimation is always activated by update_tab_graphdata
+#     '''    
+#     ctx = dash.callback_context
+#     if not ctx.triggered:
+#         raise PreventUpdate
+#     # print("ctx.triggered")
+#     # print(ctx.triggered)
+#     print("")
+#     print("update_store_saved_active_key")
+#     # print(f"newActiveKey: {newActiveKey}")
+#     if newActiveKey is None:
+#         newActiveKey = children[0]["props"]["id"]
+#     return newActiveKey
 
 
 # @app.callback(
@@ -804,6 +993,8 @@ def update_store_saved_active_key(
 #         ]
 
 # an experiment with ALL outputs. Better to use MATCH here. 
+
+
 @app.callback(
 [
     Output({"type1":"output-nodesSelected-2D", "index":ALL}, "children"),
@@ -816,8 +1007,8 @@ def update_store_saved_active_key(
 
 ],
 [
-    State("antd-tabs-main","activeKey"),
-    State("antd-tabs-main","children")
+    State("body-tabs","activeKey"),
+    State("body-tabs","children")
 ])
 def display_selected_nodes_(
     all_nodesSelected,

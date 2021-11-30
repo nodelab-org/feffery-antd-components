@@ -3,11 +3,11 @@ import { Tabs } from 'antd';
 
 import { isNil, none } from 'ramda';
 import 'antd/dist/antd.css';
-import { DndProvider, DragSource, DropTarget } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
+// import { DndProvider, DragSource, DropTarget } from 'react-dnd';
+// import { HTML5Backend } from 'react-dnd-html5-backend';
 import PropTypes from "prop-types";
 // import { triggerFocus } from "antd/lib/input/Input";
-
+import { ApartmentOutlined, NodeIndexOutlined } from '@ant-design/icons';
 
 const { TabPane } = Tabs;
 
@@ -39,19 +39,16 @@ const resolveChildProps = (child) => {
 };
 
 
-
-const renderTabPane = (child, tabKey, n_tabs) => {
+const renderTabPane = (child, n_tabs, forceRender) => {
     
     const childProps = resolveChildProps(child) 
-
-    // console.log("resolved child props")
-    // console.log(childProps)
 
     const {
         children,
         className,
         id,
-        tab,
+        tabTitle,
+        icon,
         style,
         // key,
         disabled,
@@ -63,20 +60,27 @@ const renderTabPane = (child, tabKey, n_tabs) => {
         setProps,
         ...otherProps
     } = childProps;
-
-    // console.log("children to supply to TabPane:")
-    // console.log(children)   
+    
+    // const styledTabTitle = <pre style={tabTitleStyle}>{tabTitle}</pre>
 
     return (
         <TabPane
-            id={id}
             className={className}
-            style={style}
-            tab={tab}
-            key={id}
-            disabled={disabled}
             closable={n_tabs > 1? true : false}
-            loading_state={loading_state}>
+            // closable={true}
+            disabled={disabled}
+            forceRender={forceRender}
+            id={id}
+            key={id}
+            loading_state={loading_state}
+            style={style}
+            // tab={tabTitle}>
+            tab={icon === "schema"
+                ? <span> <ApartmentOutlined /> {tabTitle}</span>
+                : icon === "data"
+                    ? <span> <NodeIndexOutlined /> {tabTitle}</span>
+                    : tabTitle
+            }>
             {child}
         </TabPane>
     )
@@ -146,7 +150,7 @@ export default function AntdTabs (props) {
     const children = parseChildrenToArray(props.children)
     // const [order, setOrder] = useState(children.map(child=>child.key))
     let tabPanesRender = children 
-        ? children.map((tp, index) => renderTabPane(tp, String(index), children.length))
+        ? children.map((tp, index) => renderTabPane(tp, children.length, props.tabLength, props.forceRender))
         : []
     let activeKey = props.activeKey? props.activeKey : props.defaultActiveKey;
 
@@ -183,20 +187,21 @@ export default function AntdTabs (props) {
     // };
 
     {/* <WrapTabNode key={node.key} index={node.key} moveTabNode={moveTabNode}> */}
-    const renderTabBar = (prps, DefaultTabBar) => (
-        <DefaultTabBar {...prps}>
-        {node => (
-            node
-        )}
-        </DefaultTabBar>
-    );
+    // const renderTabBar = (prps, DefaultTabBar) => (
+    //     <DefaultTabBar {...prps}>
+    //     {node => (
+    //         node
+    //     )}
+    //     </DefaultTabBar>
+    // );
 
     
     const onChange = aKey => {
         console.log("onChange callback fired")
         props.setProps({ 
             // "previousActiveKey" : props.activeKey,
-            "activeKey" : aKey
+            "activeKey" : aKey,
+            // "trigger" : "change"
         })
 
     };
@@ -207,7 +212,7 @@ export default function AntdTabs (props) {
 
             props.setProps({
                 "nClicksRemove": props.nClicksRemove + 1,
-                "trigger": "remove",
+                // "trigger": "remove",
                 "targetKey":targetKey})
             
             // let lastIndex;
@@ -228,7 +233,7 @@ export default function AntdTabs (props) {
 
             props.setProps({
                 "nClicksAdd": props.nClicksAdd + 1,
-                "trigger": "add"
+                // "trigger": "add"
             });
             // props.setProps({"activeKey" : lastIndex})
 
@@ -236,6 +241,22 @@ export default function AntdTabs (props) {
 
     }
 
+    const onTabClick = (key, event) => {
+        
+        // executed when active tab is clicked
+
+        if (key === props.activeKey) {
+            
+            console.log("increment nTabClicks!")
+
+            props.setProps({
+                "nTabClicks": props.nTabClicks + 1,
+                // "trigger": "add"
+            });
+
+        }
+
+    }
     // if (tabPanesRender && tabPanesRender.length && tabPanesRender.length < order.length) {
         
     //     // child removed
@@ -324,10 +345,11 @@ export default function AntdTabs (props) {
     // }
 
     return (
-        <DndProvider backend={HTML5Backend}>
+        // <DndProvider backend={HTML5Backend}>
             <Tabs 
                 id={props.id}
-                renderTabBar={renderTabBar} 
+                animated={props.animated}
+                // renderTabBar={renderTabBar} 
                 className={props.className}
                 style={props.style}
                 defaultActiveKey={props.defaultActiveKey}
@@ -338,33 +360,41 @@ export default function AntdTabs (props) {
                 hideAdd={false}
                 onChange={onChange}
                 onEdit={onEdit}
+                onTabClick={onTabClick}
                 data-dash-is-loading={
                     (props.loading_state && props.loading_state.is_loading) || undefined
                 }>
                 {tabPanesRender}
             </Tabs>
-        </DndProvider>
+        // </DndProvider>
     );
     
 }
 
 AntdTabs.propTypes = {
     
+    /**
+     * whether to animate change of tab
+     */
+    animated: PropTypes.bool,
+
     // key. readonly
     activeKey: PropTypes.string,
     
     /**
-     * children
+     * tab children, i.e. contents
      */
     children: PropTypes.node,
     
     // css className
     className: PropTypes.string,
     
-    // key
+    // default active key
     defaultActiveKey: PropTypes.string,
     
-    // id
+    forceRender: PropTypes.bool,
+
+    // component id
     id: PropTypes.string,
     
     /**
@@ -378,6 +408,11 @@ AntdTabs.propTypes = {
     nClicksRemove: PropTypes.number,
 
     /**
+     * number of times add button has been clicked
+     */
+    nTabClicks: PropTypes.number,
+
+    /**
      * new tab to add on click
      */
     // newTab: PropTypes.node,
@@ -387,15 +422,7 @@ AntdTabs.propTypes = {
     // css inline styles
     style: PropTypes.object,
 
-    // 'top'、'left'、'right', 'bottom'
-    tabPosition: PropTypes.string,
-
-    // 'small'、'default' 'large'
-    size: PropTypes.string,
-
-    targetKey: PropTypes.string,
-    // latestDeletePane: PropTypes.string,
-
+    
     loading_state: PropTypes.shape({
         /**
          * Determines if the component is loading or not
@@ -411,24 +438,37 @@ AntdTabs.propTypes = {
         component_name: PropTypes.string
     }),
 
+    // 'small'、'default' 'large'
+    size: PropTypes.string,
+
+    // 'top'、'left'、'right', 'bottom'
+    tabPosition: PropTypes.string,
+
     /**
      * Dash-assigned callback that should be called to report property changes
      * to Dash, to make them available for callbacks.
      */
     setProps: PropTypes.func,
 
+    targetKey: PropTypes.string,
+    // latestDeletePane: PropTypes.string,
+
+
     /**
-     * Used to make it easy in Dash application to detect whether nClicksAadd or nClicksRemove caused component to update
+     * Used to make it easy in Dash application to detect whether nClicksAadd, nClicksRemove or changing active tab caused component to update
      */
-    trigger: PropTypes.string
+    // trigger: PropTypes.string
 
 };
 
 AntdTabs.defaultProps = {
+    animated: false,
     activeKey:"0",  
+    forceRender: false,
     defaultActiveKey:"0",  
     nClicksAdd:0,
     nClicksRemove:0,
+    nTabClicks:0,
     size:"small"
 };
 
