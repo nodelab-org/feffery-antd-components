@@ -107,10 +107,13 @@ description = "A dash version of react-force-graph, witextended with mpconvenien
 category = "main"
 optional = false
 python-versions = "*"
+develop = false
 
 [package.source]
-type = "file"
-url = "../dash_react_force_graph/dist/dash_react_force_graph-0.0.1-py3-none-any.whl"
+type = "git"
+url = "https://github.com/nodelab-aps/dash-react-force-graph.git"
+reference = "master"
+resolved_reference = "9d54e8d4504f90b598706e22f59919f72e7a8221"
 
 [[package]]
 name = "dash-table"
@@ -295,7 +298,7 @@ watchdog = ["watchdog"]
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.8"
-content-hash = "ffa88292a24e17dd8135c7866a5f4d5fbaf40c0a01dbbe1ae3dab47afcadbf7b"
+content-hash = "4070f97dbc378ed2e6a4aa76de09549f240521c5eeb057362521fd67bcc220d2"
 
 [metadata.files]
 brotli = [
@@ -360,9 +363,7 @@ dash-extensions = [
 dash-html-components = [
     {file = "dash_html_components-1.1.4.tar.gz", hash = "sha256:dc4f423e13716d179d51a42b3c7e2a2ed02e05185c742f88214b58d59e24bbd4"},
 ]
-dash-react-force-graph = [
-    {file = "dash_react_force_graph-0.0.1-py3-none-any.whl", hash = "sha256:3299379640c6582145a83115938b615d2f42ad4cde3b89adb9e1e32adbca2898"},
-]
+dash-react-force-graph = []
 dash-table = [
     {file = "dash_table-4.12.0.tar.gz", hash = "sha256:4c99689a887bfd035278b14ecd5db70706023389e53735d5e3cccc416facdbe4"},
 ]
