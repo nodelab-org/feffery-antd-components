@@ -102,21 +102,6 @@ optional = false
 python-versions = "*"
 
 [[package]]
-name = "dash-react-font-awesome-icon-picker"
-version = "0.1.0"
-description = "dash port of react-font-awesome-icon-picker"
-category = "dev"
-optional = false
-python-versions = "^3.5"
-develop = false
-
-[package.source]
-type = "git"
-url = "https://github.com/nodelab-aps/dash-react-font-awesome-icon-picker.git"
-reference = "main"
-resolved_reference = "88de8ddb97f5d82b75e3957a72aebcbf48056ad8"
-
-[[package]]
 name = "dash-react-force-graph"
 version = "0.0.1"
 description = "A dash version of react-force-graph, witextended with mpconvenience methods and props"
@@ -374,7 +359,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytes
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.5"
-content-hash = "cc6d707827e3bb25fac5000e60b714baad7df0ae294c70827411949ef0a4868f"
+content-hash = "b16abfe71db03c6c2b5ecdcde3c424ecf39085b0154d877077f63aa925db23d2"
 
 [metadata.files]
 brotli = [
@@ -440,7 +425,6 @@ dash-extensions = [
 dash-html-components = [
     {file = "dash_html_components-2.0.0.tar.gz", hash = "sha256:8703a601080f02619a6390998e0b3da4a5daabe97a1fd7a9cebc09d015f26e50"},
 ]
-dash-react-font-awesome-icon-picker = []
 dash-react-force-graph = []
 dash-table = [
     {file = "dash_table-5.0.0.tar.gz", hash = "sha256:18624d693d4c8ef2ddec99a6f167593437a7ea0bf153aa20f318c170c5bc7308"},
