@@ -6,7 +6,7 @@ authors = ["Your Name <you@example.com>"]
 license = "MIT"
 
 [tool.poetry.dependencies]
-python = ">=3.5"
+python = "^3.5"
 
 [tool.poetry.dev-dependencies]
 dash-bootstrap-components = "^0.13.0"
@@ -15,6 +15,7 @@ dash-react-force-graph = {git = "https://github.com/nodelab-aps/dash-react-force
 dash-extensions = "^0.0.65"
 dash-daq = "^0.5.0"
 dash = "^2.0.0"
+dash-react-font-awesome-icon-picker = {git = "https://github.com/nodelab-aps/dash-react-font-awesome-icon-picker.git", rev = "main"}
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
