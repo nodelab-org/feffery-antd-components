@@ -233,7 +233,7 @@ layout = dbc.Container(
                     children=[
                         Graph2D(
                             id="graph2D", 
-                            key="graph2D",
+                            # key="graph2D",
                             # graphData={"nodes":[], "links":[]},#graphdata_init,
                             graphData=graphdata_init,
                             heightRatio=0.6,
