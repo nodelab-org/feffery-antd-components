@@ -150,9 +150,16 @@ export default function AntdTabs (props) {
     const children = parseChildrenToArray(props.children)
     // const [order, setOrder] = useState(children.map(child=>child.key))
     let tabPanesRender = children 
-        ? children.map((tp, index) => renderTabPane(tp, children.length, props.tabLength, props.forceRender))
+        ? children.map((tp, index) => renderTabPane(
+            tp,
+            children.length,
+            props.tabLength,
+            props.forceRender
+            ))
         : []
-    let activeKey = props.activeKey? props.activeKey : props.defaultActiveKey;
+    let activeKey = props.activeKey
+        ? props.activeKey
+        : props.defaultActiveKey;
 
     // console.log("tabPanesRender initialised")
     // console.log(tabPanesRender)
@@ -195,47 +202,55 @@ export default function AntdTabs (props) {
     //     </DefaultTabBar>
     // );
 
-    
     const onChange = aKey => {
-        console.log("onChange callback fired")
-        props.setProps({ 
-            // "previousActiveKey" : props.activeKey,
-            "activeKey" : aKey,
-            // "trigger" : "change"
-        })
+
+        if (!props.disabled) {
+
+            console.log("onChange callback fired")
+            props.setProps({ 
+                // "previousActiveKey" : props.activeKey,
+                "activeKey" : aKey,
+                // "trigger" : "change"
+            })
+
+        }
 
     };
 
     const onEdit = (targetKey, action) => {
         console.log("onEdit callback fired")
-        if (action === "remove") {
+        if (!props.disabled) {
 
-            props.setProps({
-                "nClicksRemove": props.nClicksRemove + 1,
-                // "trigger": "remove",
-                "targetKey":targetKey})
-            
-            // let lastIndex;
-
-            // tabPanesRender.forEach((tp, i) => {
+            if (action === "remove") {
+    
+                props.setProps({
+                    "nClicksRemove": props.nClicksRemove + 1,
+                    // "trigger": "remove",
+                    "targetKey":targetKey})
                 
-            //     if (tp.key === props.targetKey) {
-
-            //         lastIndex = i - 1;
+                // let lastIndex;
+    
+                // tabPanesRender.forEach((tp, i) => {
+                    
+                //     if (tp.key === props.targetKey) {
+    
+                //         lastIndex = i - 1;
+                    
+                //     }
+    
+                // }); 
+    
+                // props.setProps({"activeKey" : lastIndex})
                 
-            //     }
-
-            // }); 
-
-            // props.setProps({"activeKey" : lastIndex})
-            
-        } else if (action === "add") {
-
-            props.setProps({
-                "nClicksAdd": props.nClicksAdd + 1,
-                // "trigger": "add"
-            });
-            // props.setProps({"activeKey" : lastIndex})
+            } else if (action === "add") {
+    
+                props.setProps({
+                    "nClicksAdd": props.nClicksAdd + 1,
+                    // "trigger": "add"
+                });
+                // props.setProps({"activeKey" : lastIndex})
+    
+            }
 
         }
 
@@ -245,7 +260,7 @@ export default function AntdTabs (props) {
         
         // executed when active tab is clicked
 
-        if (key === props.activeKey) {
+        if (key === props.activeKey && !props.disabled) {
             
             console.log("increment nTabClicks!")
 
@@ -392,6 +407,8 @@ AntdTabs.propTypes = {
     // default active key
     defaultActiveKey: PropTypes.string,
     
+    disabled: PropTypes.bool,
+
     forceRender: PropTypes.bool,
 
     // component id
@@ -466,6 +483,7 @@ AntdTabs.defaultProps = {
     activeKey:"0",  
     forceRender: false,
     defaultActiveKey:"0",  
+    disabled: false,
     nClicksAdd:0,
     nClicksRemove:0,
     nTabClicks:0,
