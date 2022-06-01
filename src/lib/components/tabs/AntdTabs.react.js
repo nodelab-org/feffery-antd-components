@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Tabs } from 'antd';
 
 import { isNil, none } from 'ramda';
@@ -148,6 +148,7 @@ const renderTabPane = (child, n_tabs, forceRender) => {
 export default function AntdTabs (props) {
     
     const children = parseChildrenToArray(props.children)
+    const [tabsDisabled, setTabsDisabled] = useState(props.disabled)
     // const [order, setOrder] = useState(children.map(child=>child.key))
     let tabPanesRender = children 
         ? children.map((tp, index) => renderTabPane(
@@ -160,6 +161,12 @@ export default function AntdTabs (props) {
     let activeKey = props.activeKey
         ? props.activeKey
         : props.defaultActiveKey;
+    
+    useEffect(() => {
+
+        setTabsDisabled((dsbld) => props.disabled === true || props.disabled === "true")
+
+    }, [props.disabled])
 
     // console.log("tabPanesRender initialised")
     // console.log(tabPanesRender)
@@ -204,7 +211,7 @@ export default function AntdTabs (props) {
 
     const onChange = aKey => {
 
-        if (!props.disabled) {
+        if (!tabsDisabled) {
 
             console.log("onChange callback fired")
             props.setProps({ 
@@ -218,8 +225,10 @@ export default function AntdTabs (props) {
     };
 
     const onEdit = (targetKey, action) => {
-        console.log("onEdit callback fired")
-        if (!props.disabled) {
+        
+        if (!tabsDisabled) {
+
+            console.log("onEdit callback fired")
 
             if (action === "remove") {
     
@@ -260,7 +269,7 @@ export default function AntdTabs (props) {
         
         // executed when active tab is clicked
 
-        if (key === props.activeKey && !props.disabled) {
+        if (key === props.activeKey && !tabsDisabled) {
             
             console.log("increment nTabClicks!")
 
