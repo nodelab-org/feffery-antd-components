@@ -15,17 +15,16 @@ Keyword arguments:
 - `id` (String; required)
 - `className` (String; optional)
 - `disabled` (Bool; optional)
-- `icon` (String; optional)
 - `loading_state` (optional): . loading_state has the following type: lists containing elements 'is_loading', 'prop_name', 'component_name'.
 Those elements have the following types:
   - `is_loading` (Bool; optional): Determines if the component is loading or not
   - `prop_name` (String; optional): Holds which property is loading
   - `component_name` (String; optional): Holds the name of the component that is loading
 - `style` (Dict; optional)
-- `tabTitle` (String; optional)
+- `tabTitle` (String | a list of or a singular dash component, string or number; optional)
 """
 function feffery_antdtabpane(; kwargs...)
-        available_props = Symbol[:children, :id, :className, :disabled, :icon, :loading_state, :style, :tabTitle]
+        available_props = Symbol[:children, :id, :className, :disabled, :loading_state, :style, :tabTitle]
         wild_props = Symbol[]
         return Component("feffery_antdtabpane", "AntdTabPane", "feffery_antd_components", available_props, wild_props; kwargs...)
 end

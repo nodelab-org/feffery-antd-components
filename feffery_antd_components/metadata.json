@@ -29,13 +29,6 @@
           "computed": false
         }
       },
-      "icon": {
-        "type": {
-          "name": "string"
-        },
-        "required": false,
-        "description": ""
-      },
       "style": {
         "type": {
           "name": "object"
@@ -49,7 +42,15 @@
       },
       "tabTitle": {
         "type": {
-          "name": "string"
+          "name": "union",
+          "value": [
+            {
+              "name": "string"
+            },
+            {
+              "name": "node"
+            }
+          ]
         },
         "required": false,
         "description": "",

@@ -48,7 +48,6 @@ const renderTabPane = (child, n_tabs, forceRender) => {
         className,
         id,
         tabTitle,
-        icon,
         style,
         // key,
         disabled,
@@ -74,13 +73,7 @@ const renderTabPane = (child, n_tabs, forceRender) => {
             key={id}
             loading_state={loading_state}
             style={style}
-            // tab={tabTitle}>
-            tab={icon === "schema"
-                ? <span> <ApartmentOutlined /> {tabTitle}</span>
-                : icon === "data"
-                    ? <span> <NodeIndexOutlined /> {tabTitle}</span>
-                    : tabTitle
-            }>
+            tab={tabTitle}>
             {child}
         </TabPane>
     )
