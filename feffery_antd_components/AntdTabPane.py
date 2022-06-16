@@ -34,14 +34,14 @@ Keyword arguments:
 
 - style (dict; optional)
 
-- tabTitle (string | a list of or a singular dash component, string or number; default "New Tab")"""
+- tab (string | a list of or a singular dash component, string or number; default "New Tab")"""
     @_explicitize_args
-    def __init__(self, children=None, id=Component.REQUIRED, className=Component.UNDEFINED, style=Component.UNDEFINED, tabTitle=Component.UNDEFINED, disabled=Component.UNDEFINED, loading_state=Component.UNDEFINED, **kwargs):
-        self._prop_names = ['children', 'id', 'className', 'disabled', 'loading_state', 'style', 'tabTitle']
+    def __init__(self, children=None, id=Component.REQUIRED, className=Component.UNDEFINED, style=Component.UNDEFINED, tab=Component.UNDEFINED, disabled=Component.UNDEFINED, loading_state=Component.UNDEFINED, **kwargs):
+        self._prop_names = ['children', 'id', 'className', 'disabled', 'loading_state', 'style', 'tab']
         self._type = 'AntdTabPane'
         self._namespace = 'feffery_antd_components'
         self._valid_wildcard_attributes =            []
-        self.available_properties = ['children', 'id', 'className', 'disabled', 'loading_state', 'style', 'tabTitle']
+        self.available_properties = ['children', 'id', 'className', 'disabled', 'loading_state', 'style', 'tab']
         self.available_wildcard_properties =            []
         _explicit_args = kwargs.pop('_explicit_args')
         _locals = locals()

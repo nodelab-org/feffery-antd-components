@@ -2,6 +2,9 @@ import React, { } from 'react';
 import PropTypes from 'prop-types';
 import 'antd/dist/antd.css';
 
+const { Tabs } = antd;
+const { TabPane } = Tabs;
+
 const parseChildrenToArray = children => {
     if (children && !Array.isArray(children)) {
         return [children];
@@ -9,37 +12,59 @@ const parseChildrenToArray = children => {
     return children;
 };
 
+const resolveChildProps = (child) => {
+    // This may need to change in the future if https://github.com/plotly/dash-renderer/issues/84 is addressed
+    if (
+        // disabled is a defaultProp (so it's always set)
+        // meaning that if it's not set on child.props, the actual
+        // props we want are lying a bit deeper - which means they
+        // are coming from Dash
+        isNil(child.props.disabled) &&
+        child.props._dashprivate_layout &&
+        child.props._dashprivate_layout.props
+    ) {
+        // props are coming from Dash
+        return child.props._dashprivate_layout.props;
+    } else {
+        // else props are coming from React (e.g. Demo.js, or Tabs.test.js)
+        return child.props;
+    }
+};
+
+
 // https://ant.design/components/tabs-cn/
 export default function AntdTabPane (props) {
 
+    const resolvedProps = resolveChildProps(props) 
+
     const {
         id,
-        // key,
         children,
         className,
         style,
-        tabTitle,
+        tab,
         disabled,
-        // closable,
         loading_state,
         ...otherProps
-    } = props;
+    } = resolvedProps;
 
     return (
-        <div id={id}
-            children={parseChildrenToArray(children)}
+        <TabPane
             className={className}
-            style={style}
-            tabTitle={tabTitle}
+            closable={true}
             disabled={disabled}
-            // closable={closable} 
+            forceRender={forceRender}
+            id={id}
+            key={id}
+            loading_state={loading_state}
+            style={style}
+            tab={tab}
             data-dash-is-loading={
                 (loading_state && loading_state.is_loading) || undefined
-            }
-            >
-        </div>
-    );
-    
+            }>
+            {parseChildrenToArray(children)}
+        </TabPane>
+    )
 }
 
 //
@@ -59,7 +84,7 @@ AntdTabPane.propTypes = {
     style: PropTypes.object,
 
     // title of tab displayed in tab bar
-    tabTitle: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+    tab: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
 
     // inline  CSS styles for tab title. Useful for fixing width to avoid problems with flexbox when changint tabTitle after render
     // tabTitleStyle: PropTypes.object,
@@ -99,5 +124,5 @@ AntdTabPane.defaultProps = {
     className:"antd-tabpane",
     disabled:false,
     style:{},
-    tabTitle:"New Tab"
+    tab:"New Tab"
 }

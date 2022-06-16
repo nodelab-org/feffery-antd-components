@@ -21,10 +21,10 @@ Those elements have the following types:
   - `prop_name` (String; optional): Holds which property is loading
   - `component_name` (String; optional): Holds the name of the component that is loading
 - `style` (Dict; optional)
-- `tabTitle` (String | a list of or a singular dash component, string or number; optional)
+- `tab` (String | a list of or a singular dash component, string or number; optional)
 """
 function feffery_antdtabpane(; kwargs...)
-        available_props = Symbol[:children, :id, :className, :disabled, :loading_state, :style, :tabTitle]
+        available_props = Symbol[:children, :id, :className, :disabled, :loading_state, :style, :tab]
         wild_props = Symbol[]
         return Component("feffery_antdtabpane", "AntdTabPane", "feffery_antd_components", available_props, wild_props; kwargs...)
 end

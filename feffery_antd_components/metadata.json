@@ -40,7 +40,7 @@
           "computed": false
         }
       },
-      "tabTitle": {
+      "tab": {
         "type": {
           "name": "union",
           "value": [

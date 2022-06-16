@@ -1,5 +1,5 @@
 import { ApartmentOutlined, NodeIndexOutlined } from '@ant-design/icons';
-import React, { } from 'react';
+// import React, { } from 'react';
 import PropTypes from 'prop-types';
 
 // https://ant.design/components/tabs-cn/
@@ -7,8 +7,7 @@ export default function AntdIcon(props) {
 
     const {
         id,
-        icon,
-        ...otherProps
+        icon
     } = props;
 
     return Function("<"+icon+" id="+id+" />")();
