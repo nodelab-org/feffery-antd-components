@@ -6,18 +6,17 @@ import PropTypes from 'prop-types';
 export default function AntdIcon(props) {
 
     const {
-        id,
         icon
     } = props;
 
-    return Function("<"+icon+" id="+id+" />")();
+    return Function("<"+icon+" />")();
     
 }
 
 //
 AntdIcon.propTypes = {
     // id
-    id: PropTypes.string.isRequired,
+    // id: PropTypes.string,
 
     // icon to display. Currently must be 'schema' or 'data'
     icon: PropTypes.string.isRequired, 
