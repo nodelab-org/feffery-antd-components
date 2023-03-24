@@ -525,7 +525,7 @@ tenacity = ">=6.2.0"
 name = "pyaml"
 version = "21.10.1"
 description = "PyYAML-based module to produce pretty and readable YAML-serialized data"
-category = "main"
+category = "dev"
 optional = false
 python-versions = "*"
 files = [
@@ -567,7 +567,7 @@ files = [
 name = "pyyaml"
 version = "6.0"
 description = "YAML parser and emitter for Python"
-category = "main"
+category = "dev"
 optional = false
 python-versions = ">=3.6"
 files = [
@@ -658,4 +658,4 @@ watchdog = ["watchdog"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<4.0"
-content-hash = "d82c37d0c1ac8763c4c551126687e2f5cb8dfa040d5eb24a608acfd31737be4d"
+content-hash = "d3389b5c8fcc923f3b414dd5c53fd8d363d90afab9f27a590101e5b55f2bb8ee"
