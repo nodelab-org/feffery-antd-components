@@ -22,8 +22,8 @@ export default function AntdTabPane (props) {
         tabTitle,
         disabled,
         // closable,
-        loading_state,
-        ...otherProps
+        loading_state
+        // ...otherProps
     } = props;
 
     return (

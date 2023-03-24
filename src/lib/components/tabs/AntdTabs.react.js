@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Tabs } from 'antd';
 
-import { isNil, none } from 'ramda';
+import { isNil } from 'ramda';
 import 'antd/dist/antd.css';
 // import { DndProvider, DragSource, DropTarget } from 'react-dnd';
 // import { HTML5Backend } from 'react-dnd-html5-backend';
@@ -57,8 +57,8 @@ const renderTabPane = (child, n_tabs, forceRender) => {
         persisted_props,
         persistence,
         persistence_type,
-        setProps,
-        ...otherProps
+        setProps
+        // ...otherProps
     } = childProps;
     
     // const styledTabTitle = <pre style={tabTitleStyle}>{tabTitle}</pre>
@@ -154,7 +154,7 @@ export default function AntdTabs (props) {
         ? children.map((tp, index) => renderTabPane(
             tp,
             children.length,
-            props.tabLength,
+            // props.tabLength,
             props.forceRender
             ))
         : []
