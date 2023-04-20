@@ -218,6 +218,22 @@ files = [
 ]
 
 [[package]]
+name = "dash-react-force-graph"
+version = "0.1.0"
+description = ""
+category = "dev"
+optional = false
+python-versions = "^3.8"
+files = []
+develop = false
+
+[package.source]
+type = "git"
+url = "https://github.com/nodelab-aps/dash-react-force-graph.git"
+reference = "master"
+resolved_reference = "c4a3e9db73dd2b9284390dd566ad2699f160a076"
+
+[[package]]
 name = "dash-table"
 version = "5.0.0"
 description = "Dash table"
@@ -658,4 +674,4 @@ watchdog = ["watchdog"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<4.0"
-content-hash = "d3389b5c8fcc923f3b414dd5c53fd8d363d90afab9f27a590101e5b55f2bb8ee"
+content-hash = "1fb61ba46f00df16625a545129596b74ddfd8b954c47d305faa8707705065ddb"

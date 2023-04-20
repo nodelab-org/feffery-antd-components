@@ -241,8 +241,8 @@ layout = dbc.Container(
                             nodeLabel="__nodeLabel",
                             nodeColor="__nodeColor",
                             nodeIcon="__nodeIcon",
-                            nodeImg="__nodeImg",
-                            nodeIcon_fontsheets={"FontAwesome":"https://kit.fontawesome.com/a6e0eeba63.js"}
+                            nodeImg="__nodeImg"
+                            #nodeIcon_fontsheets={"FontAwesome":"https://kit.fontawesome.com/a6e0eeba63.js"}
                         ),
                     ]
                 ),
