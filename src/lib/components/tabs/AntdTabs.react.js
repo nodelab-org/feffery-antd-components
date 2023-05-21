@@ -71,7 +71,7 @@ const renderTabPane = (child, n_tabs, forceRender) => {
             disabled={disabled}
             forceRender={forceRender}
             id={id}
-            key={id}
+            key={typeof(id) === "string"? id : id.index}    
             loading_state={loading_state}
             style={style}
             // tab={tabTitle}>
