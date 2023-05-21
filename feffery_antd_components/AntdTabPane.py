@@ -13,7 +13,7 @@ Keyword arguments:
     The content of the tab - will only be displayed if this tab is
     selected.
 
-- id (string; required)
+- id (string | dict; required)
 
 - className (string; default "antd-tabpane")
 

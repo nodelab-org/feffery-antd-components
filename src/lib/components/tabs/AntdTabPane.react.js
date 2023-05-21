@@ -3,7 +3,9 @@ import PropTypes from 'prop-types';
 import 'antd/dist/antd.css';
 
 const parseChildrenToArray = children => {
-    if (children && !Array.isArray(children)) {
+    if (
+        children && !Array.isArray(children)
+    ) {
         return [children];
     }
     return children;
@@ -36,7 +38,9 @@ export default function AntdTabPane (props) {
             disabled={disabled}
             // closable={closable} 
             data-dash-is-loading={
-                (loading_state && loading_state.is_loading) || undefined
+                (
+                    loading_state && loading_state.is_loading
+                ) || undefined
             }
             >
         </div>
@@ -47,7 +51,12 @@ export default function AntdTabPane (props) {
 //
 AntdTabPane.propTypes = {
     // id
-    id: PropTypes.string.isRequired,
+    id: PropTypes.oneOfType(
+        [
+            PropTypes.string,
+            PropTypes.object
+        ]
+    ).isRequired,
 
     /**
      * The content of the tab - will only be displayed if this tab is selected

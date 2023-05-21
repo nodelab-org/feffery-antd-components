@@ -8,6 +8,7 @@ license = "MIT"
 [tool.poetry.dependencies]
 python = ">=3.8,<4.0"
 #python = "^3.5"
+dash-react-force-graph = {git = "https://github.com/nodelab-aps/dash-react-force-graph.git", rev = "master"}
 
 [tool.poetry.dev-dependencies]
 dash-bootstrap-components = "^0.13.0"

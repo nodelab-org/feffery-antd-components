@@ -12,7 +12,7 @@ Keyword arguments:
 - children (a list of or a singular dash component, string or number; optional):
     tab children, i.e. contents.
 
-- id (string; optional)
+- id (string | dict; required)
 
 - activeKey (string; default "0")
 
@@ -58,7 +58,7 @@ Keyword arguments:
 
 - targetKey (string; optional)"""
     @_explicitize_args
-    def __init__(self, children=None, animated=Component.UNDEFINED, activeKey=Component.UNDEFINED, className=Component.UNDEFINED, defaultActiveKey=Component.UNDEFINED, disabled=Component.UNDEFINED, forceRender=Component.UNDEFINED, id=Component.UNDEFINED, nClicksAdd=Component.UNDEFINED, nClicksRemove=Component.UNDEFINED, nTabClicks=Component.UNDEFINED, style=Component.UNDEFINED, loading_state=Component.UNDEFINED, size=Component.UNDEFINED, tabPosition=Component.UNDEFINED, targetKey=Component.UNDEFINED, **kwargs):
+    def __init__(self, children=None, animated=Component.UNDEFINED, activeKey=Component.UNDEFINED, className=Component.UNDEFINED, defaultActiveKey=Component.UNDEFINED, disabled=Component.UNDEFINED, forceRender=Component.UNDEFINED, id=Component.REQUIRED, nClicksAdd=Component.UNDEFINED, nClicksRemove=Component.UNDEFINED, nTabClicks=Component.UNDEFINED, style=Component.UNDEFINED, loading_state=Component.UNDEFINED, size=Component.UNDEFINED, tabPosition=Component.UNDEFINED, targetKey=Component.UNDEFINED, **kwargs):
         self._prop_names = ['children', 'id', 'activeKey', 'animated', 'className', 'defaultActiveKey', 'disabled', 'forceRender', 'loading_state', 'nClicksAdd', 'nClicksRemove', 'nTabClicks', 'size', 'style', 'tabPosition', 'targetKey']
         self._type = 'AntdTabs'
         self._namespace = 'feffery_antd_components'
@@ -69,7 +69,7 @@ Keyword arguments:
         _locals = locals()
         _locals.update(kwargs)  # For wildcard attrs
         args = {k: _locals[k] for k in _explicit_args if k != 'children'}
-        for k in []:
+        for k in ['id']:
             if k not in args:
                 raise TypeError(
                     'Required argument `' + k + '` was not specified.')

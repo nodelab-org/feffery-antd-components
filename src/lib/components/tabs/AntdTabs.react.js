@@ -421,7 +421,12 @@ AntdTabs.propTypes = {
     forceRender: PropTypes.bool,
 
     // component id
-    id: PropTypes.string,
+    id: PropTypes.oneOfType(
+        [
+            PropTypes.string,
+            PropTypes.object
+        ]
+    ).isRequired,
     
     /**
      * number of times add button has been clicked

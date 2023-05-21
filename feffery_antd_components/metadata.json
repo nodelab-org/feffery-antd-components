@@ -6,7 +6,15 @@
     "props": {
       "id": {
         "type": {
-          "name": "string"
+          "name": "union",
+          "value": [
+            {
+              "name": "string"
+            },
+            {
+              "name": "object"
+            }
+          ]
         },
         "required": true,
         "description": ""
@@ -178,9 +186,17 @@
       },
       "id": {
         "type": {
-          "name": "string"
+          "name": "union",
+          "value": [
+            {
+              "name": "string"
+            },
+            {
+              "name": "object"
+            }
+          ]
         },
-        "required": false,
+        "required": true,
         "description": ""
       },
       "nClicksAdd": {
